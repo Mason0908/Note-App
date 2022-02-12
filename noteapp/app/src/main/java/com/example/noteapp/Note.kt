@@ -1,10 +1,8 @@
 package com.example.noteapp
 
-class Note (
-    private val id: Int?,
-    private val folderId: Int?,
-    private var title: String?,
-    private var body: String?
-    ) {
-
-}
+data class Note (
+    val id: Int,
+    var folderId: Int?,
+    var title: String,
+    var body: String
+    )
