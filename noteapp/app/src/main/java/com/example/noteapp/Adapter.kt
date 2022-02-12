@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.NonNull
 
-
+/**
+ * @Description Adapter for Recycle View
+ */
 class Adapter internal constructor(context: Context?, notes: MutableList<Note>) :
     RecyclerView.Adapter<Adapter.ViewHolder?>() {
     private val inflater: LayoutInflater

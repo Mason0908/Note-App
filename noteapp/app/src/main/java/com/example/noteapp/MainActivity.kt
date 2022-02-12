@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.noteapp.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+/**
+ * @Description Home screen
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var noteBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
@@ -24,17 +27,27 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(actionBar)
         supportActionBar!!.title = "记事簿"
 
+        // Get reference for add button
         btnAdd = findViewById(R.id.btnAdd)
         btnAdd.setOnClickListener {
             startActivity(Intent(this, AddNoteActivity::class.java))
             finish()
         }
 
+        // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
+
+        // Display list if exists
         if (notes.size > 0){
             displayList()
         }
     }
+
+    /**
+     * @Description Display all notes in the database
+     * @author Mason
+     * @return void
+     */
     private fun displayList() {
         noteBoard.setLayoutManager(LinearLayoutManager(this))
         val adapter = Adapter(this, notes)

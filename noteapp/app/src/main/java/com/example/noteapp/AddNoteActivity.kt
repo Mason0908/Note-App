@@ -13,6 +13,9 @@ import android.view.MenuInflater
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+/**
+ * @Description Add/Edit note screen
+ */
 
 class AddNoteActivity : AppCompatActivity() {
     private lateinit var titleField: EditText

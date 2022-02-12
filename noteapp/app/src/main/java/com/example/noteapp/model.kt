@@ -4,6 +4,10 @@ import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 
+/**
+ * @Description Underlying model class for monitoring notes
+ */
+
 class model: Application() {
     private val notes: MutableList<Note> = mutableListOf()
     private var _idCounter: Int = 0
