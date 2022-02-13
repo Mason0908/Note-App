@@ -7,5 +7,7 @@ data class Note (
     val id: Int,
     var folderId: Int?,
     var title: String,
-    var body: String
+    var body: String,
+    var isLocked: Boolean,
+    var password: String?
     )

@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/deleteChanges"
-        android:icon="@drawable/delete_icon"
-        android:title="Delete"
+        android:id="@+id/addTag"
+        android:icon="@drawable/add_icon"
+        android:title="AddTag"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/saveChanges"

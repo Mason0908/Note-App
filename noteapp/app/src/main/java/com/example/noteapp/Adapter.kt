@@ -27,7 +27,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>) 
         val title: String = notes[i].title
         val id: Int = notes[i].id
         viewHolder.nTitle.text = title
-        viewHolder.nID.text = java.lang.String.valueOf(notes[i].id)
+        viewHolder.nID.text = java.lang.String.valueOf(id)
     }
 
     override fun getItemCount(): Int {
@@ -42,8 +42,8 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>) 
             nTitle = itemView.findViewById(R.id.nTitle)
             nID = itemView.findViewById(R.id.listId)
             itemView.setOnClickListener { v ->
-                val i = Intent(v.context, AddNoteActivity::class.java)
-                i.putExtra("id", notes[adapterPosition].id)
+                val i = Intent(v.context, ViewNoteActivity::class.java)
+                i.putExtra("displayId", notes[adapterPosition].id)
                 v.context.startActivity(i)
             }
         }

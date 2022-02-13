@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.noteapp.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        notes = (this.application as model).getAllNotes()
+        notes = (this.application as Model).getAllNotes()
 
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
