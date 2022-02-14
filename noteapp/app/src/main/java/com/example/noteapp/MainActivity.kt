@@ -3,6 +3,9 @@ package com.example.noteapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 /**
  * @Description Home screen
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var notes: MutableList<Note>
@@ -40,6 +43,36 @@ class MainActivity : AppCompatActivity() {
         if (notes.size > 0){
             displayList()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.search_menu, menu)
+        val search = menu?.findItem(R.id.searchIcon)
+        val searchView = search?.actionView as SearchView
+        searchView.isSubmitButtonEnabled = false
+        searchView.setOnQueryTextListener(this)
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText != null){
+            notes = (this.application as Model).getSearchNotes(newText)
+            displayList()
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.searchIcon -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     /**
