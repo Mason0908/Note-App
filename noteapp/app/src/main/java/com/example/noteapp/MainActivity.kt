@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
         setSupportActionBar(actionBar)
-        supportActionBar!!.title = "记事簿"
+        supportActionBar!!.title = "Note Book"
 
         // Get reference for add button
         btnAdd = findViewById(R.id.btnAdd)
