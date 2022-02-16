@@ -101,14 +101,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun sortData(asc: Boolean) {
-        println("sorting")
         if (asc) {
             notes.sortBy { it.title }
-            println(notes)
         } else {
             notes.sortByDescending { it.title }
         }
-
         startActivity(Intent(this, MainActivity::class.java))
     }
 
