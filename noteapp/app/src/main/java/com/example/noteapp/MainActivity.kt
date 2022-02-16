@@ -17,12 +17,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
+    private lateinit var btnSort: FloatingActionButton
+    private var ascending: Boolean = true
     private lateinit var notes: MutableList<Note>
+    private lateinit var adapter: Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         notes = (this.application as Model).getAllNotes()
+
+        adapter = Adapter(this, notes)
+        noteBoard.adapter = adapter;
 
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
@@ -38,6 +44,12 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
+
+        // initialize sort button
+        btnSort = findViewById(R.id.btnSort)
+        btnSort.setOnClickListener{
+            sortData(ascending)
+        }
 
         // Display list if exists
         if (notes.size > 0){
@@ -85,4 +97,15 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val adapter = Adapter(this, notes)
         noteBoard.setAdapter(adapter)
     }
+
+    private fun sortData(asc: Boolean) {
+        if (asc) {
+            notes.sortBy { it.title }
+        } else {
+            notes.sortByDescending { it.title }
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+
 }
