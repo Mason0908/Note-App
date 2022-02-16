@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +28,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         setContentView(R.layout.activity_main)
         notes = (this.application as Model).getAllNotes()
 
+        // Get reference for note list
+        noteBoard = findViewById(R.id.noteBoard)
+
         adapter = Adapter(this, notes)
+        noteBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         noteBoard.adapter = adapter;
 
         val actionBar: Toolbar = findViewById(R.id.toolbar)
@@ -41,9 +46,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             startActivity(Intent(this, AddNoteActivity::class.java))
             finish()
         }
-
-        // Get reference for note list
-        noteBoard = findViewById(R.id.noteBoard)
 
         // initialize sort button
         btnSort = findViewById(R.id.btnSort)
@@ -99,12 +101,15 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     private fun sortData(asc: Boolean) {
+        println("sorting")
         if (asc) {
             notes.sortBy { it.title }
+            println(notes)
         } else {
             notes.sortByDescending { it.title }
         }
-        adapter.notifyDataSetChanged()
+
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
 
