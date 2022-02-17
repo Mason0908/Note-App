@@ -109,5 +109,4 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         startActivity(Intent(this, MainActivity::class.java))
     }
 
-
 }
