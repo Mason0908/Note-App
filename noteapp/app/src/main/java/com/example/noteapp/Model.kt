@@ -62,12 +62,17 @@ class Model: Application() {
         note.isLocked = false
     }
 
-    private fun search(criteria: String){
+    private fun search(criteria: String) {
         filteredNotes.clear()
-        filteredNotes.addAll(notes.filter { note -> note.body.contains(criteria, true) || note.title.contains(criteria, true) } as MutableList<Note>)
+        filteredNotes.addAll(notes.filter { note ->
+            note.body.contains(
+                criteria,
+                true
+            ) || note.title.contains(criteria, true)
+        } as MutableList<Note>)
     }
 
-    fun getSearchNotes(criteria: String): MutableList<Note>{
+    fun getSearchNotes(criteria: String): MutableList<Note> {
         search(criteria)
         return filteredNotes
     }
