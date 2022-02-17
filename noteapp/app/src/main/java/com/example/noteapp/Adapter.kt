@@ -59,10 +59,6 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
                 v.context.startActivity(i)
             }
         }
-
-        override fun onClick(p0: View?) {
-            TODO("Not yet implemented")
-        }
     }
 
     init {
