@@ -16,7 +16,7 @@ internal class NoteTest {
     fun addNotes() {
         // create 100 notes
         for (i in 0 .. 99) {
-            noteBoard.addNote("${i+1}", "")
+            noteBoard.addNote("${i+1}", "", 1)
         }
         val expected = 100
         assertEquals(expected, noteBoard.getAllNotes().size)
@@ -26,7 +26,7 @@ internal class NoteTest {
     fun deleteNote() {
         // create 100 notes
         for (i in 0 .. 99) {
-            noteBoard.addNote("${i+1}", "")
+            noteBoard.addNote("${i+1}", "", 2)
         }
         for (i in 0 .. 29) {
             noteBoard.removeNote(i)
@@ -38,7 +38,7 @@ internal class NoteTest {
     @Test
     fun lockNote() {
         for (i in 0 .. 99) {
-            noteBoard.addNote("${i+1}", "")
+            noteBoard.addNote("${i+1}", "", 3)
         }
         for (i in 50 .. 89) {
             noteBoard.lockNote(i, "123")
@@ -56,7 +56,7 @@ internal class NoteTest {
     @Test
     fun unlockNote() {
         for (i in 0 .. 99) {
-            noteBoard.addNote("${i+1}", "")
+            noteBoard.addNote("${i+1}", "", 4)
         }
         for (i in 50 .. 89) {
             noteBoard.lockNote(i, "123")
@@ -72,5 +72,16 @@ internal class NoteTest {
             }
         }
         assertEquals(expected, countUnlock)
+    }
+
+    @Test
+    fun searchNote() {
+        noteBoard.addNote("HELLO", "note", 1)
+        noteBoard.addNote("hello", "NOTE", 2)
+        noteBoard.addNote("NOTE", "hEllo", 3)
+        noteBoard.addNote("note", "Hello", 4)
+        val searchNoteSize = noteBoard.getSearchNotes("hello").size // should be case insensitive
+        val expected = 4
+        assertEquals(expected, searchNoteSize)
     }
 }
