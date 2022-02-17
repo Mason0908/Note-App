@@ -26,8 +26,8 @@ class Model: Application() {
         return notes.find { it.id == id }
     }
 
-    fun addNote(title: String, body: String) {
-        val noteToAdd: Note = Note(generateID(), null, title, body, false, null)
+    fun addNote(title: String, body: String, color: Int) {
+        val noteToAdd: Note = Note(generateID(), null, title, body, false, null, color)
         notes.add(noteToAdd)
     }
 

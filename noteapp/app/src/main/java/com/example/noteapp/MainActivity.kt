@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
         setSupportActionBar(actionBar)
-        supportActionBar!!.title = "Note Book"
+        supportActionBar!!.title = "My Notes"
 
         // Get reference for add button
         btnAdd = findViewById(R.id.btnAdd)

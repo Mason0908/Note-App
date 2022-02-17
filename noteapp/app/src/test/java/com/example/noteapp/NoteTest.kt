@@ -73,15 +73,4 @@ internal class NoteTest {
         }
         assertEquals(expected, countUnlock)
     }
-
-    @Test
-    fun searchNote() {
-        noteBoard.addNote("HELLO", "note")
-        noteBoard.addNote("hello", "NOTE")
-        noteBoard.addNote("NOTE", "hEllo")
-        noteBoard.addNote("note", "Hello")
-        val searchNoteSize = noteBoard.getSearchNotes("hello").size // should be case insensitive
-        val expected = 4
-        assertEquals(expected, searchNoteSize)
-    }
 }

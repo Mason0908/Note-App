@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
@@ -57,7 +59,7 @@ class AddNoteActivity : AppCompatActivity() {
             R.id.saveChanges -> {
                 val app = this.application as Model
                 if (!app.hasNote(noteId)) {
-                    app.addNote(titleField.text.toString(), bodyField.text.toString())
+                    app.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour())
                 } else {
                     app.editNote(noteId, titleField.text.toString(), bodyField.text.toString())
                 }
@@ -73,5 +75,25 @@ class AddNoteActivity : AppCompatActivity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.save_menu, menu)
         return true
+    }
+
+    private fun generateColour(): Int {
+        val num = (1..4).random()
+        var color = 0
+        when(num) {
+            1 -> {
+                color = R.color.lightyellow
+            }
+            2 -> {
+                color = R.color.lightblue
+            }
+            3 -> {
+                color = R.color.lightgreyyellow
+            }
+            4 -> {
+                color = R.color.lightpink
+            }
+        }
+        return color
     }
 }
