@@ -10,16 +10,17 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@color/teal_200"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/noteBoard"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="594dp"
+        android:layout_height="880dp"
         android:layout_margin="10dp"
         android:layout_marginStart="9dp"
         android:layout_marginTop="9dp"
@@ -40,16 +41,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnSort"
-        android:layout_width="59dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="96dp"
-        android:layout_marginBottom="680dp"
-        android:src="@drawable/sort_icon"
-        android:outlineAmbientShadowColor="@color/black"
-        android:outlineSpotShadowColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <RadioGroup
+        android:layout_width="248dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="11dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <RadioButton
+            android:id="@+id/sort_az"
+            android:layout_width="105dp"
+            android:layout_height="31dp"
+            android:buttonTint="#FAFFFFFF"
+            android:onClick="onRadioButtonClicked"
+            android:saveEnabled="true"
+            android:text="A to Z"
+            android:textColor="#FFFFFF" />
+
+        <RadioButton
+            android:id="@+id/sort_za"
+            android:layout_width="107dp"
+            android:layout_height="31dp"
+            android:buttonTint="#FFFFFF"
+            android:onClick="onRadioButtonClicked"
+            android:text="Z to A"
+            android:textColor="#FFFFFF" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

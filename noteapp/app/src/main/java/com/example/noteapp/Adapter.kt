@@ -11,6 +11,7 @@ import android.widget.TextView
 /**
  * @Description Adapter for Recycle View
  */
+
 class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
     RecyclerView.Adapter<Adapter.ViewHolder?>() {
     private val inflater: LayoutInflater
@@ -32,7 +33,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
         return notes.size
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var nTitle: TextView
         var nID: TextView
 
@@ -44,6 +45,10 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
                 i.putExtra("displayId", notes[adapterPosition].id)
                 v.context.startActivity(i)
             }
+        }
+
+        override fun onClick(p0: View?) {
+            TODO("Not yet implemented")
         }
     }
 

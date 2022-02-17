@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ActionMenuView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.widget.RadioButton
+import com.google.android.material.radiobutton.MaterialRadioButton
 
 /**
  * @Description Home screen
@@ -18,8 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
-    private lateinit var btnSort: FloatingActionButton
-    private var ascending: Boolean = true
     private lateinit var notes: MutableList<Note>
     private lateinit var adapter: Adapter
 
@@ -31,9 +33,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
 
-        adapter = Adapter(this, notes)
+        // Tying with the adapter
         noteBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        noteBoard.adapter = adapter;
+        adapter = Adapter(this, notes)
+        noteBoard.adapter = adapter
 
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
@@ -45,12 +48,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         btnAdd.setOnClickListener {
             startActivity(Intent(this, AddNoteActivity::class.java))
             finish()
-        }
-
-        // initialize sort button
-        btnSort = findViewById(R.id.btnSort)
-        btnSort.setOnClickListener{
-            sortData(ascending)
         }
 
         // Display list if exists
@@ -72,6 +69,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String?): Boolean {
         return true
     }
+
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
             notes = (this.application as Model).getSearchNotes(newText)
@@ -89,6 +87,30 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         return super.onOptionsItemSelected(item)
     }
 
+    fun onRadioButtonClicked(view: View) {
+        println(notes)
+        println(view)
+        println(view.getId())
+        if (view is MaterialRadioButton) {
+            val checked = view.isChecked
+
+            when (view.getId()) {
+                R.id.sort_az ->
+                    if (checked) {
+                        notes.sortBy { it.title }
+                        println(notes)
+                    }
+                R.id.sort_za ->
+                    if (checked) {
+                        notes.sortByDescending { it.title }
+                        println(notes)
+                    }
+            }
+            startActivity(Intent(this, MainActivity::class.java))
+            //adapter.notifyDataSetChanged()
+        }
+    }
+
     /**
      * @Description Display all notes in the database
      * @author Mason
@@ -99,15 +121,5 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val adapter = Adapter(this, notes)
         noteBoard.setAdapter(adapter)
     }
-
-    private fun sortData(asc: Boolean) {
-        if (asc) {
-            notes.sortBy { it.title }
-        } else {
-            notes.sortByDescending { it.title }
-        }
-        startActivity(Intent(this, MainActivity::class.java))
-    }
-
 
 }
