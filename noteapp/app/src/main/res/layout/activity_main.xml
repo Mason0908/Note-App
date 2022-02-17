@@ -17,10 +17,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/noteBoard"
-        android:layout_width="594dp"
-        android:layout_height="880dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="10dp"
         android:layout_marginStart="9dp"
         android:layout_marginTop="9dp"

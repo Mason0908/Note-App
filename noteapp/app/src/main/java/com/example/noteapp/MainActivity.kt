@@ -88,9 +88,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
     fun onRadioButtonClicked(view: View) {
-        println(notes)
-        println(view)
-        println(view.getId())
         if (view is MaterialRadioButton) {
             val checked = view.isChecked
 
@@ -98,12 +95,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 R.id.sort_az ->
                     if (checked) {
                         notes.sortBy { it.title }
-                        println(notes)
                     }
                 R.id.sort_za ->
                     if (checked) {
                         notes.sortByDescending { it.title }
-                        println(notes)
                     }
             }
             startActivity(Intent(this, MainActivity::class.java))
