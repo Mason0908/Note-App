@@ -9,5 +9,6 @@ data class Note (
     var title: String,
     var body: String,
     var isLocked: Boolean,
-    var password: String?
+    var password: String?,
+    var color: Int
     )

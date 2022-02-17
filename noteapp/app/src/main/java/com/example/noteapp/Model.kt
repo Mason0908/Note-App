@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 
 class Model: Application() {
     private val notes: MutableList<Note> = mutableListOf()
+    private val filteredNotes: MutableList<Note> = mutableListOf()
     private var _idCounter: Int = 0
 
     private fun generateID(): Int {
@@ -25,8 +26,8 @@ class Model: Application() {
         return notes.find { it.id == id }
     }
 
-    fun addNote(title: String, body: String) {
-        val noteToAdd: Note = Note(generateID(), null, title, body, false, null)
+    fun addNote(title: String, body: String, color: Int) {
+        val noteToAdd: Note = Note(generateID(), null, title, body, false, null, color)
         notes.add(noteToAdd)
     }
 
@@ -59,5 +60,15 @@ class Model: Application() {
         val note = getNoteById(id)!!
         note.password = null
         note.isLocked = false
+    }
+
+    private fun search(criteria: String){
+        filteredNotes.clear()
+        filteredNotes.addAll(notes.filter { note -> note.body.contains(criteria, true) || note.title.contains(criteria, true) } as MutableList<Note>)
+    }
+
+    fun getSearchNotes(criteria: String): MutableList<Note>{
+        search(criteria)
+        return filteredNotes
     }
 }
