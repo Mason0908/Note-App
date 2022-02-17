@@ -43,8 +43,8 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <RadioGroup
-        android:layout_width="248dp"
-        android:layout_height="37dp"
+        android:layout_width="219dp"
+        android:layout_height="32dp"
         android:layout_marginBottom="11dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
@@ -52,7 +52,7 @@
 
         <RadioButton
             android:id="@+id/sort_az"
-            android:layout_width="105dp"
+            android:layout_width="87dp"
             android:layout_height="31dp"
             android:buttonTint="#FAFFFFFF"
             android:onClick="onRadioButtonClicked"
@@ -62,7 +62,7 @@
 
         <RadioButton
             android:id="@+id/sort_za"
-            android:layout_width="107dp"
+            android:layout_width="84dp"
             android:layout_height="31dp"
             android:buttonTint="#FFFFFF"
             android:onClick="onRadioButtonClicked"
