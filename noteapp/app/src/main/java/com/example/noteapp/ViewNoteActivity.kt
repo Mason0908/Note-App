@@ -39,8 +39,8 @@ class ViewNoteActivity : AppCompatActivity() {
             if (currNote.isLocked) {
                 showLockedNoteAlert(currNote)
             } else {
-                supportActionBar!!.title = currNote?.title
-                noteDisplay.text = currNote?.body
+                supportActionBar!!.title = currNote.title
+                noteDisplay.text = currNote.body
             }
         }
     }
@@ -53,7 +53,6 @@ class ViewNoteActivity : AppCompatActivity() {
                 return true
             }
             R.id.lockNote -> {
-                //Todo: enable locking note
                 val note = app.getNoteById(noteId)!!
                 if (note.isLocked) {
                     showResetOrDeleteAlert(note)
