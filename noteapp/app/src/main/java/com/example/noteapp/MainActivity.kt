@@ -117,4 +117,16 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         noteBoard.setAdapter(adapter)
     }
 
+<<<<<<< HEAD
+=======
+    private fun sortData(asc: Boolean) {
+        if (asc) {
+            notes.sortBy { it.title }
+        } else {
+            notes.sortByDescending { it.title }
+        }
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+
+>>>>>>> diane
 }
