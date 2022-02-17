@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,8 @@ import kotlin.random.Random
 /**
  * @Description Adapter for Recycle View
  */
-class Adapter internal constructor(context: Context?, notes: MutableList<Note>) :
+
+class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
     RecyclerView.Adapter<Adapter.ViewHolder?>() {
     private val inflater: LayoutInflater
     private val notes: List<Note>
