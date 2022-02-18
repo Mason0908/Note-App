@@ -1,0 +1,104 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.noteapp"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+8-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="31" />
+9-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml
+10
+11    <application
+11-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:5:5-37:19
+12        android:name="com.example.noteapp.Model"
+12-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:6:9-30
+13        android:allowBackup="true"
+13-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:7:9-35
+14        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+14-->[androidx.core:core:1.7.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\3b16d604ecf1a3ba90b57bf493908e8e\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
+15        android:debuggable="true"
+16        android:extractNativeLibs="false"
+17        android:icon="@mipmap/ic_launcher"
+17-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:8:9-43
+18        android:label="@string/app_name"
+18-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:9:9-41
+19        android:roundIcon="@mipmap/ic_launcher_round"
+19-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:10:9-54
+20        android:supportsRtl="true"
+20-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:11:9-35
+21        android:testOnly="true"
+22        android:theme="@style/Theme.Noteapp" >
+22-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:12:9-45
+23        <activity
+23-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:13:9-15:40
+24            android:name="com.example.noteapp.LockNoteActivity"
+24-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:14:13-45
+25            android:exported="false" />
+25-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:15:13-37
+26        <activity
+26-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:16:9-18:40
+27            android:name="com.example.noteapp.ViewNoteActivity"
+27-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:17:13-45
+28            android:exported="false" />
+28-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:18:13-37
+29        <activity
+29-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:19:9-27:20
+30            android:name="com.example.noteapp.MainActivity"
+30-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:20:13-41
+31            android:exported="true" >
+31-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:21:13-36
+32            <intent-filter>
+32-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:22:13-26:29
+33                <action android:name="android.intent.action.MAIN" />
+33-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:23:17-69
+33-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:23:25-66
+34
+35                <category android:name="android.intent.category.LAUNCHER" />
+35-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:25:17-77
+35-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:25:27-74
+36            </intent-filter>
+37        </activity>
+38        <activity
+38-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:28:9-36:20
+39            android:name="com.example.noteapp.AddNoteActivity"
+39-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:29:13-44
+40            android:exported="true" >
+40-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:30:13-36
+41            <intent-filter>
+41-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:22:13-26:29
+42                <action android:name="android.intent.action.MAIN" />
+42-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:23:17-69
+42-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:23:25-66
+43
+44                <category android:name="android.intent.category.LAUNCHER" />
+44-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:25:17-77
+44-->C:\Users\Yiran Li\Documents\GitHub\cs398_project\noteapp\app\src\main\AndroidManifest.xml:25:27-74
+45            </intent-filter>
+46        </activity>
+47
+48        <provider
+48-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:26:9-34:20
+49            android:name="androidx.startup.InitializationProvider"
+49-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:27:13-67
+50            android:authorities="com.example.noteapp.androidx-startup"
+50-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:28:13-68
+51            android:exported="false" >
+51-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:29:13-37
+52            <meta-data
+52-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:31:13-33:52
+53                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+53-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:32:17-75
+54                android:value="androidx.startup" />
+54-->[androidx.emoji2:emoji2:1.0.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\7ba4e753ba4b5f4a804fd42cfed9343b\transformed\jetified-emoji2-1.0.0\AndroidManifest.xml:33:17-49
+55            <meta-data
+55-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\6feb955ebb6e344d4d3781bb5b197d1b\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:31:13-33:52
+56                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+56-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\6feb955ebb6e344d4d3781bb5b197d1b\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:32:17-78
+57                android:value="androidx.startup" />
+57-->[androidx.lifecycle:lifecycle-process:2.4.0] C:\Users\Yiran Li\.gradle\caches\transforms-3\6feb955ebb6e344d4d3781bb5b197d1b\transformed\jetified-lifecycle-process-2.4.0\AndroidManifest.xml:33:17-49
+58        </provider>
+59    </application>
+60
+61</manifest>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 7.0.2" type="partial_results">
+    <map id="UnusedResources">
+        <location id="R.color.purple_500"
+            file="$APP/src/main/res/values/colors.xml"
+            line="4"
+            column="12"
+            startOffset="109"
+            endLine="4"
+            endColumn="29"
+            endOffset="126"/>
+        <location id="R.drawable.unlock_icon"
+            file="$APP/src/main/res/drawable/unlock_icon.xml"
+            line="1"
+            column="1"
+            startOffset="0"
+            endLine="5"
+            endColumn="10"
+            endOffset="558"/>
+        <entry
+            name="model"
+            string="attr[colorControlNormal(R),actionBarSize(R),colorPrimaryVariant(R)],color[purple_200(U),black(U),teal_200(U),white(U),teal_700(U),purple_700(U),purple_500(D)],drawable[lock_icon(U),add_icon(U),edit_icon(U),save_icon(U),delete_icon(U),ic_launcher_foreground(U),unlock_icon(D),ic_launcher_background(U),ic_launcher_foreground_1(R),notecartoon(U)],id[noteTitle(U),noteBody(U),noteDisplay(U),constraintLayout(U),editNote(U),imageView(D),nTitle(U),addTag(U),toolbar(U),listId(U),saveChanges(U),btnAdd(U),lockNote(U),deleteNote(U),noteBoard(U)],layout[note_card(U),activity_view_note(U),activity_addnote(U),activity_main(U),activity_lock_note(U)],menu[view_menu(U),save_menu(U)],mipmap[ic_launcher_round(U),ic_launcher(U)],string[app_name(U)],style[Theme_Noteapp(U),ThemeOverlay_AppCompat_Dark_ActionBar(R),Theme_MaterialComponents_DayNight_DarkActionBar(R),Theme_MaterialComponents_DayNight_NoActionBar(R)];d^0,e^0,f^12,23^13^17^1a,24^5^1^2e,25^5^1^2e^1c^14,26^5^1^2e^1c^b,28^a^e^c,29^b^d,2a^11^f,2b^11^f,2d^30^3^8^6^5^7^2^2f^4;;;"/>
+    </map>
+
+</incidents>
