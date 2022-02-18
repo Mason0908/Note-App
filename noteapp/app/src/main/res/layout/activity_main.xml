@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/sortGroup" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAdd"
@@ -44,31 +44,35 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <RadioGroup
+        android:id="@+id/sortGroup"
         android:layout_width="219dp"
         android:layout_height="32dp"
-        android:layout_marginBottom="11dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/noteBoard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <RadioButton
             android:id="@+id/sort_az"
             android:layout_width="87dp"
             android:layout_height="31dp"
-            android:buttonTint="#FAFFFFFF"
+            android:buttonTint="@color/black"
             android:onClick="onRadioButtonClicked"
             android:saveEnabled="true"
             android:text="A to Z"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/black" />
 
         <RadioButton
             android:id="@+id/sort_za"
             android:layout_width="84dp"
             android:layout_height="31dp"
-            android:buttonTint="#FFFFFF"
+            android:buttonTint="@color/black"
             android:onClick="onRadioButtonClicked"
             android:text="Z to A"
-            android:textColor="#FFFFFF" />
+            android:textColor="@color/black" />
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

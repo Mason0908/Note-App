@@ -101,20 +101,20 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         notes.sortByDescending { it.title }
                     }
             }
-            startActivity(Intent(this, MainActivity::class.java))
-            //adapter.notifyDataSetChanged()
+
+            displayList()
         }
     }
 
     /**
-     * @Description Display all notes in the database
+     * @Description Set up adapter for recycle view
      * @author Mason
      * @return void
      */
     private fun displayList() {
-        noteBoard.setLayoutManager(LinearLayoutManager(this))
+        noteBoard.layoutManager = LinearLayoutManager(this)
         val adapter = Adapter(this, notes)
-        noteBoard.setAdapter(adapter)
+        noteBoard.adapter = adapter
     }
 
 }
