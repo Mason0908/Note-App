@@ -31,6 +31,10 @@ internal class NoteTest {
         for (i in 0 .. 29) {
             noteBoard.removeNote(i)
         }
+        for (i in 30 .. 99) {
+            val note = noteBoard.getNoteById(i)
+            assertEquals(note?.title, (i + 1).toString())
+        }
         val expected = 70
         assertEquals(expected, noteBoard.getAllNotes().size)
     }
