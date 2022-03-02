@@ -5,9 +5,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -102,6 +105,7 @@ class ViewNoteActivity : AppCompatActivity() {
             }
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
                 db.unlockNote(note.id)
+                Toast.makeText(this, "Password removed!", Toast.LENGTH_SHORT).show()
                 dialog.cancel()
             }
             dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener {
@@ -130,9 +134,12 @@ class ViewNoteActivity : AppCompatActivity() {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
                 if (input.text.toString().isNullOrEmpty()) {
                     input.error = "Password cannot be empty"
-                    //Toast.makeText(this, "empty", Toast.LENGTH_SHORT).show()
                 } else {
-                    //Toast.makeText(this, "yeah!", Toast.LENGTH_SHORT).show()
+                    if (isReset) {
+                        Toast.makeText(this, "Password reset!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Password created!", Toast.LENGTH_SHORT).show()
+                    }
                     db.lockNote(note.id, input.text.toString())
                     dialog.dismiss()
                 }
@@ -141,44 +148,42 @@ class ViewNoteActivity : AppCompatActivity() {
                 dialog.cancel()
             }
         }
-
         dialog.show()
     }
 
     fun showLockedNoteAlert(note: Note) {
         this.setContentView(R.layout.activity_lock_note)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("This note is locked. Please enter the password.")
-        val input = EditText(this)
-        input.inputType = InputType.TYPE_CLASS_TEXT
-        builder.setView(input)
-        builder.setPositiveButton("OK", null)
-        builder.setNegativeButton("Cancel", null)
-        val dialog = builder.create()
-
-        dialog.setOnShowListener {
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                if (input.text.toString() != note.password) {
-                    input.error = "Password incorrect!"
-                } else {
-                    // initialize note view again
-                    setContentView(R.layout.activity_view_note)
-                    noteDisplay = findViewById(R.id.noteDisplay)
-                    // the action bar with current note title and delete
-                    val actionBar: Toolbar = findViewById(R.id.toolbar)
-                    setSupportActionBar(actionBar)
-                    supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                    supportActionBar!!.title = note.title
-                    noteDisplay.text = note.body
-                    dialog.dismiss()
-                }
-            }
-            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
-                dialog.cancel()
-                startActivity(Intent(this, MainActivity::class.java))
+        val btnShowHide: Button = findViewById(R.id.btnShowHide)
+        val btnCancel: Button = findViewById(R.id.btnCancel)
+        val btnOK: Button = findViewById(R.id.btnOK)
+        val pwd: EditText = findViewById(R.id.pwd)
+        btnShowHide.setOnClickListener {
+            if(btnShowHide.text.toString() == "Show"){
+                pwd.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btnShowHide.text = "Hide"
+            } else{
+                pwd.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnShowHide.text = "Show"
             }
         }
-
-        dialog.show()
+        btnCancel.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        btnOK.setOnClickListener {
+            if (pwd.text.toString() != note.password) {
+                pwd.error = "Password incorrect!"
+            } else {
+                //get view note again
+                setContentView(R.layout.activity_view_note)
+                noteDisplay = findViewById(R.id.noteDisplay)
+                // the action bar with current note title and delete
+                val actionBar: Toolbar = findViewById(R.id.toolbar)
+                setSupportActionBar(actionBar)
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                supportActionBar!!.title = note.title
+                noteDisplay.text = note.body
+                Toast.makeText(this, "Note unlocked!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
