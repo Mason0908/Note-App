@@ -34,8 +34,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        db.execSQL("DROP TABLE IF EXISTS notes")
-        onCreate(db)
+        if (p1 < 2){
+            db.execSQL("ALTER TABLE notes ADD tags TEXT")
+        }
     }
 
     /**
@@ -192,7 +193,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private val DATABASE_NAME = "NoteApp"
 
         // below is the variable for database version
-        private val DATABASE_VERSION = 1
+        private val DATABASE_VERSION = 2
 
         // below is the variable for table name
         val TABLE_NAME = "notes"
