@@ -19,6 +19,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
     private lateinit var bodyField: EditText
     private var noteId: Int = -1
+    private val db = DB(this, null)
 
     private lateinit var btnSave: FloatingActionButton
 
@@ -38,7 +39,7 @@ class AddNoteActivity : AppCompatActivity() {
         val i = intent
         noteId = i.getIntExtra("editId", -1)
         if (noteId >= 0) {
-            val currNote = (this.application as Model).getNoteById(noteId)
+            val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
             bodyField.setText(currNote?.body)
             supportActionBar!!.title = currNote?.title
@@ -57,11 +58,10 @@ class AddNoteActivity : AppCompatActivity() {
                 return true
             }
             R.id.saveChanges -> {
-                val app = this.application as Model
-                if (!app.hasNote(noteId)) {
-                    app.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour())
+                if (!db.hasNote(noteId)) {
+                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour())
                 } else {
-                    app.editNote(noteId, titleField.text.toString(), bodyField.text.toString())
+                    db.editNote(noteId, titleField.text.toString(), bodyField.text.toString())
                 }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()

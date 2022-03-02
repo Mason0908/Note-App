@@ -17,13 +17,12 @@ import androidx.appcompat.widget.Toolbar
 class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
     private var noteId: Int = -1
-    private lateinit var app: Model
+    private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_note)
 
-        app = this.application as Model
         noteDisplay = findViewById(R.id.noteDisplay)
 
         // the action bar with current note title and delete
@@ -35,7 +34,7 @@ class ViewNoteActivity : AppCompatActivity() {
         val i = intent
         noteId = i.getIntExtra("displayId", -1)
         if (noteId >= 0){
-            val currNote = app.getNoteById(noteId)!!
+            val currNote = db.getNoteById(noteId)!!
             if (currNote.isLocked) {
                 showLockedNoteAlert(currNote)
             } else {
@@ -53,7 +52,7 @@ class ViewNoteActivity : AppCompatActivity() {
                 return true
             }
             R.id.lockNote -> {
-                val note = app.getNoteById(noteId)!!
+                val note = db.getNoteById(noteId)!!
                 if (note.isLocked) {
                     showResetOrDeleteAlert(note)
                 } else {
@@ -64,7 +63,7 @@ class ViewNoteActivity : AppCompatActivity() {
             R.id.deleteNote -> {
                 // Remove only if the id exists
                 if (noteId >= 0){
-                    app.removeNote(noteId)
+                    db.removeNote(noteId)
                 }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
@@ -102,7 +101,7 @@ class ViewNoteActivity : AppCompatActivity() {
                 showPasswordWindow(note, true)
             }
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
-                app.unlockNote(note.id)
+                db.unlockNote(note.id)
                 dialog.cancel()
             }
             dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener {
@@ -134,7 +133,7 @@ class ViewNoteActivity : AppCompatActivity() {
                     //Toast.makeText(this, "empty", Toast.LENGTH_SHORT).show()
                 } else {
                     //Toast.makeText(this, "yeah!", Toast.LENGTH_SHORT).show()
-                    app.lockNote(note.id, input.text.toString())
+                    db.lockNote(note.id, input.text.toString())
                     dialog.dismiss()
                 }
             }

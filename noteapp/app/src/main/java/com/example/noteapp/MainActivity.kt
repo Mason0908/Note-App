@@ -24,11 +24,13 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var notes: MutableList<Note>
     private lateinit var adapter: Adapter
+    private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        notes = (this.application as Model).getAllNotes()
+        notes = db.getAllNotes()
+        val testNotes = db.getAllNotes()
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
@@ -72,7 +74,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            notes = (this.application as Model).getSearchNotes(newText)
+            notes = db.getSearchNotes(newText)
             displayList()
         }
         return true
@@ -101,7 +103,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         notes.sortByDescending { it.title }
                     }
             }
-
             displayList()
         }
     }

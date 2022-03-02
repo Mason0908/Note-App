@@ -4,6 +4,11 @@ import android.app.Application
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import android.content.ContentValues
+import android.content.Context
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 
 /**
  * @Description Underlying model class for monitoring notes
@@ -13,6 +18,7 @@ class Model: Application() {
     private val notes: MutableList<Note> = mutableListOf()
     private val filteredNotes: MutableList<Note> = mutableListOf()
     private var _idCounter: Int = 0
+
 
     private fun generateID(): Int {
         return _idCounter++
