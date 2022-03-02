@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Noteapp">
         <activity
-            android:name=".LockNoteActivity"
-            android:exported="false" />
-        <activity
             android:name=".ViewNoteActivity"
             android:exported="false" />
         <activity
