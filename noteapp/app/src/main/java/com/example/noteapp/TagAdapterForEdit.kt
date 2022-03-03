@@ -3,23 +3,15 @@ package com.example.noteapp
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class TagAdapter internal constructor(context: Context?, tags: String, tagBoard: RecyclerView, activity: AddNoteActivity):
-    RecyclerView.Adapter<TagAdapter.ViewHolder?>() {
+class TagAdapterForEdit internal constructor(context: Context?, tags: String, tagBoard: RecyclerView, activity: AddNoteActivity):
+    RecyclerView.Adapter<TagAdapterForEdit.ViewHolder?>() {
     private val inflater: LayoutInflater
     private val activity: AddNoteActivity
     private var tags: String = tags
@@ -57,7 +49,7 @@ class TagAdapter internal constructor(context: Context?, tags: String, tagBoard:
                         tags = tagsList.joinToString(",")
                         activity.tags = tags
                         tagBoard.layoutManager = LinearLayoutManager(v.context, RecyclerView.HORIZONTAL, false)
-                        val adapter = TagAdapter(v.context, tags, tagBoard, activity)
+                        val adapter = TagAdapterForEdit(v.context, tags, tagBoard, activity)
                         tagBoard.adapter = adapter
                         dialog.dismiss()
                     }
@@ -66,7 +58,6 @@ class TagAdapter internal constructor(context: Context?, tags: String, tagBoard:
                     }
                 }
                 dialog.show()
-                //i.putExtra("tagNameView", tags[adapterPosition])
             }
         }
     }

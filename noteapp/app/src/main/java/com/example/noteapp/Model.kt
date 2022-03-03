@@ -33,7 +33,7 @@ class Model: Application() {
     }
 
     fun addNote(title: String, body: String, color: Int) {
-        val noteToAdd: Note = Note(generateID(), null, title, body, false, null, color)
+        val noteToAdd: Note = Note(generateID(), null, title, body, false, null, color, "")
         notes.add(noteToAdd)
     }
 
