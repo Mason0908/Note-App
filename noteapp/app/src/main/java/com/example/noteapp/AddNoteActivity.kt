@@ -1,15 +1,17 @@
 package com.example.noteapp
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.text.InputType
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * @Description Add/Edit note screen
@@ -20,8 +22,9 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var bodyField: EditText
     private var noteId: Int = -1
     private val db = DB(this, null)
-
-    private lateinit var btnSave: FloatingActionButton
+    var tags: String = ""
+    private lateinit var tagBoard: RecyclerView
+    private lateinit var adapter: TagAdapterForEdit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,18 @@ class AddNoteActivity : AppCompatActivity() {
             titleField.setText(currNote?.title)
             bodyField.setText(currNote?.body)
             supportActionBar!!.title = currNote?.title
+            tags = db.getTags(noteId)
+        }
+        // Get reference for tag list
+        tagBoard = findViewById(R.id.tagBoard)
+
+        // Tying with the adapter
+        tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        adapter = TagAdapterForEdit(this, tags, tagBoard, this)
+        tagBoard.adapter = adapter
+
+        if (tags.isNotEmpty()){
+            displayTagsListInProgress(tags)
         }
     }
 
@@ -55,13 +70,58 @@ class AddNoteActivity : AppCompatActivity() {
             }
             //Todo: enable adding tags
             R.id.addTag -> {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                builder.setTitle("Create tag")
+                val input = EditText(this)
+                input.inputType = InputType.TYPE_CLASS_TEXT
+                builder.setView(input)
+                builder.setPositiveButton("OK", null)
+                builder.setNegativeButton("Cancel", null)
+                val dialog = builder.create()
+
+                dialog.setOnShowListener {
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                        if (!db.hasNote(noteId)) {
+                            if (input.text.toString().isNullOrEmpty()) {
+                                input.error = "Tag name cannot be empty"
+                            } else {
+                                val tag = input.text.toString()
+                                if (tags.contains(tag)) {
+                                    input.error = "Tag already exists"
+                                } else {
+                                    tags += "$tag,"
+                                    displayTagsListInProgress(tags)
+                                    dialog.dismiss()
+                                }
+                            }
+                        } else {
+                            if (input.text.toString().isNullOrEmpty()) {
+                                input.error = "Tag name cannot be empty"
+                            } else {
+                                val tag = input.text.toString()
+                                if (db.hasTag(tag, noteId) || tags.contains(tag)) {
+                                    input.error = "Tag already exists"
+                                } else {
+                                    tags += "$tag,"
+                                    displayTagsListInProgress(tags)
+                                    dialog.dismiss()
+                                }
+                            }
+                        }
+                    }
+                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
+                        dialog.cancel()
+                    }
+                }
+                dialog.show()
                 return true
             }
             R.id.saveChanges -> {
+//                println(tagsList.toString())
                 if (!db.hasNote(noteId)) {
-                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour())
+                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags)
                 } else {
-                    db.editNote(noteId, titleField.text.toString(), bodyField.text.toString())
+                    db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
                 }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
@@ -95,5 +155,17 @@ class AddNoteActivity : AppCompatActivity() {
             }
         }
         return color
+    }
+
+//    private fun displayTagsList() {
+//        tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+//        adapter = TagAdapter(this, tags, tagBoard)
+//        tagBoard.adapter = adapter
+//    }
+
+    fun displayTagsListInProgress(tags: String) {
+        tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        adapter = TagAdapterForEdit(this, tags, tagBoard, this)
+        tagBoard.adapter = adapter
     }
 }

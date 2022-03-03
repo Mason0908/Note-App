@@ -42,13 +42,14 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     /**
      * @Description Adding a new note to the database
      */
-    fun addNote(title: String, body: String, color: Int){
+    fun addNote(title: String, body: String, color: Int, tags: String?){
 
         val values = ContentValues()
 
         values.put("title", title)
         values.put("body", body)
         values.put("color", color)
+        values.put("tags", tags)
 
         val db = this.writableDatabase
 
@@ -110,11 +111,12 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     /**
      * @Description Editing a note in the database by id
      */
-    fun editNote(id: Int, newTitle: String, newBody: String) {
+    fun editNote(id: Int, newTitle: String, newBody: String, newTags: String) {
         val values = ContentValues()
 
         values.put("title", newTitle)
         values.put("body", newBody)
+        values.put("tags", newTags)
         val db = this.writableDatabase
         db.update(TABLE_NAME, values, "id=$id", null)
         db.close()
@@ -169,6 +171,14 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return filteredNotes
     }
 
+    fun hasTag(tag: String, noteId: Int): Boolean {
+        return getNoteById(noteId)!!.tags?.contains(tag) ?: false
+    }
+
+    fun getTags(id: Int): String {
+        return getNoteById(id)!!.tags ?: ""
+    }
+
     /**
      * @Description Helper function to transform the
      *              current position of cursor to a note object
@@ -182,6 +192,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             cursor!!.getInt(cursor.getColumnIndex("locked")) == 1,
             cursor!!.getString(cursor.getColumnIndex("password")),
             cursor!!.getInt(cursor.getColumnIndex("color")),
+            cursor!!.getString(cursor.getColumnIndex("tags")),
         )
         return note
     }

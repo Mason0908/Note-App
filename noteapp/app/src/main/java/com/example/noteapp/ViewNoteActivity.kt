@@ -9,18 +9,22 @@ import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
     private var noteId: Int = -1
     private val db = DB(this, null)
+    private lateinit var tagBoard: RecyclerView
+    private var tags: String = ""
+    private lateinit var adapter: TagAdapterForView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +48,18 @@ class ViewNoteActivity : AppCompatActivity() {
                 supportActionBar!!.title = currNote.title
                 noteDisplay.text = currNote.body
             }
+            tags = db.getTags(noteId)
+        }
+        // Get reference for tag list
+        tagBoard = findViewById(R.id.tagBoard)
+
+        // Tying with the adapter
+        tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        adapter = TagAdapterForView(this, tags)
+        tagBoard.adapter = adapter
+
+        if (tags.isNotEmpty()){
+            displayTagsList()
         }
     }
 
@@ -185,5 +201,12 @@ class ViewNoteActivity : AppCompatActivity() {
                 Toast.makeText(this, "Note unlocked!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun displayTagsList() {
+        tags = db.getTags(noteId)
+        tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        adapter = TagAdapterForView(this, tags)
+        tagBoard.adapter = adapter
     }
 }

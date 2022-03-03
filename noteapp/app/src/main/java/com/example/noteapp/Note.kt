@@ -10,5 +10,6 @@ data class Note (
     var body: String,
     var isLocked: Boolean,
     var password: String?,
-    var color: Int
+    var color: Int,
+    var tags: String?
     )

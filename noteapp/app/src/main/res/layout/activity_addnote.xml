@@ -15,6 +15,17 @@
         android:background="@color/teal_200"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tagBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
     <EditText
         android:id="@+id/noteTitle"
         android:layout_width="0dp"
@@ -29,7 +40,7 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/tagBoard" />
 
     <EditText
         android:id="@+id/noteBody"
