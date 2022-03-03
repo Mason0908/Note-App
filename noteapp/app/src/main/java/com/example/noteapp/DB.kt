@@ -179,29 +179,6 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return getNoteById(id)!!.tags ?: ""
     }
 
-    fun getTagsList(id: Int): MutableList<String> {
-        val note = getNoteById(id)!!
-        if (note.tags != null) {
-            val temp = getNoteById(id)!!.tags?.split(",") as MutableList<String>
-            var remove = 0
-            for (i in temp.indices) {
-                if (temp[i] == "") {
-                    remove = i
-                    break
-                }
-            }
-            temp.removeAt(remove)
-            val list = temp
-            return list
-        }
-        return mutableListOf<String>()
-    }
-
-    fun removeTagInList(tag: String, tagsList: MutableList<String>): MutableList<String> {
-        tagsList.remove(tag)
-        return tagsList
-    }
-
     /**
      * @Description Helper function to transform the
      *              current position of cursor to a note object
