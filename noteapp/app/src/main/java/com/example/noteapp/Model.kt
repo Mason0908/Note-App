@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 /**
  * @Description Underlying model class for monitoring notes
+ * @Description Now is switched to database, this is no use for now
  */
 
 class Model: Application() {

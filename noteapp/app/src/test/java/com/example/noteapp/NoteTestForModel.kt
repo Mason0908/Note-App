@@ -3,7 +3,7 @@ package com.example.noteapp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class NoteTest {
+internal class NoteTestForModel {
     private val noteBoard: Model = Model()
 
     @Test

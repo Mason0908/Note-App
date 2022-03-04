@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var notes: MutableList<Note>
     private lateinit var adapter: Adapter
-    private val db = DB(this, null)
+    val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
