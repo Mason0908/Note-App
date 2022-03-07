@@ -74,6 +74,7 @@ class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
+            folders = db.getSearchFolders(newText)
             displayList()
         }
         return true

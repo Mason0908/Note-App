@@ -23,6 +23,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var bodyField: EditText
     private var noteId: Int = -1
     private val db = DB(this, null)
+    private var folderId: Int = -1
     var tags: String = ""
     private lateinit var tagBoard: RecyclerView
     private lateinit var adapter: TagAdapterForEdit
@@ -42,6 +43,7 @@ class AddNoteActivity : AppCompatActivity() {
         // Retrieve the note if exist
         val i = intent
         noteId = i.getIntExtra("editId", -1)
+        folderId = i.getIntExtra("folderId", -1)
         if (noteId >= 0) {
             val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
@@ -120,7 +122,7 @@ class AddNoteActivity : AppCompatActivity() {
             R.id.saveChanges -> {
 //                println(tagsList.toString())
                 if (!db.hasNote(noteId)) {
-                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags)
+                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags, folderId)
                 } else {
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
                 }

@@ -19,17 +19,27 @@ import com.google.android.material.radiobutton.MaterialRadioButton
 /**
  * @Description Home screen
  */
+
+/**
+ * TODO: figure out where exactly we want to delete or edit a folder (in the note main page?)
+ */
+
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var notes: MutableList<Note>
+    private var folderId: Int = -1
     private lateinit var adapter: Adapter
     private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        notes = db.getAllNotes()
+
+        val i = intent
+        folderId = i.getIntExtra("folderId", -1)
+
+        notes = db.getAllFolderNotesObject(folderId)!!
         val testNotes = db.getAllNotes()
 
         // Get reference for note list

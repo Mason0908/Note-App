@@ -22,6 +22,7 @@ class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
     private var noteId: Int = -1
     private val db = DB(this, null)
+    private var folderId: Int = -1
     private lateinit var tagBoard: RecyclerView
     private var tags: String = ""
     private lateinit var adapter: TagAdapterForView
@@ -40,6 +41,7 @@ class ViewNoteActivity : AppCompatActivity() {
         // Retrieve the note if exist
         val i = intent
         noteId = i.getIntExtra("displayId", -1)
+        folderId = i.getIntExtra("folderId", -1)
         if (noteId >= 0){
             val currNote = db.getNoteById(noteId)!!
             if (currNote.isLocked) {
@@ -91,6 +93,7 @@ class ViewNoteActivity : AppCompatActivity() {
             R.id.editNote -> {
                 val i = Intent(this, AddNoteActivity::class.java)
                 i.putExtra("editId", noteId)
+                i.putExtra("folderId", folderId)
                 startActivity(i)
                 finish()
                 return true

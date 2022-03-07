@@ -346,6 +346,23 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
+     * @Description Return all notes within a folder as a list of notes
+     */
+    @SuppressLint("Range")
+    fun getAllFolderNotesObject(id: Int): MutableList<Note>? {
+        val db = this.readableDatabase
+        val allNotesId = getAllFolderNotes(id)
+        var allNotes = mutableListOf<Note>()
+
+        val notesIterator = allNotesId?.iterator()
+        while (notesIterator!!.hasNext()) {
+            val note = getNoteById(notesIterator.next())
+            allNotes.add(note!!)
+        }
+        return allNotes
+    }
+
+    /**
      * @Description Helper function to transform the
      *              current position of cursor to a folder object
      */

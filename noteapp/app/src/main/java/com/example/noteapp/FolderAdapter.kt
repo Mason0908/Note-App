@@ -20,21 +20,22 @@ import kotlin.random.Random
  * @Description Folder Adapter for Recycle View
  */
 
-class FolderAdapter internal constructor(context: Context?, notes: MutableList<Folder>):
+class FolderAdapter internal constructor(context: Context?, folders: MutableList<Folder>):
     RecyclerView.Adapter<FolderAdapter.ViewHolder?>() {
     private val inflater: LayoutInflater
     private val folders: List<Folder>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = inflater.inflate(R.layout.note_card, parent, false)
+        val view: View = inflater.inflate(R.layout.folder_card, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         val title: String = folders[i].title
         val id: Int = folders[i].id
-        viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, folders[i].color))
-        //viewHolder.nTitle.text = title
+        val notesid: List<Int> = folders[i].notesId
+        viewHolder.folderCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.folderCard.context, folders[i].color))
+        viewHolder.fTitle.text = title
         //viewHolder.nID.text = java.lang.String.valueOf(id)
         //viewHolder.lock.isVisible = notes[i].isLocked
         //viewHolder.nTitle.isVisible = !notes[i].isLocked
@@ -46,16 +47,16 @@ class FolderAdapter internal constructor(context: Context?, notes: MutableList<F
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var nTitle: TextView = itemView.findViewById(R.id.nTitle)
-        var nID: TextView = itemView.findViewById(R.id.listId)
-        val lock: ImageView = itemView.findViewById(R.id.imageLock)
-        val noteCard: CardView = itemView.findViewById(R.id.noteCard)
-        val imageNote: ImageView = itemView.findViewById(R.id.imageNote)
+        var fTitle: TextView = itemView.findViewById(R.id.nTitle)
+        // var nID: TextView = itemView.findViewById(R.id.listId)
+        val folderCard: CardView = itemView.findViewById(R.id.noteCard)
 
         init {
             itemView.setOnClickListener { v ->
-                val i = Intent(v.context, ViewNoteActivity::class.java)
+                val i = Intent(v.context, MainActivity::class.java)
                 i.putExtra("displayId", folders[adapterPosition].id)
+                // i.putExtra("notesListId", folders[adapterPosition].notesId)
+                // the above does not work for now (need parcelable data class)
                 v.context.startActivity(i)
             }
         }
@@ -63,6 +64,6 @@ class FolderAdapter internal constructor(context: Context?, notes: MutableList<F
 
     init {
         inflater = LayoutInflater.from(context)
-        this.folders = notes
+        this.folders = folders
     }
 }
