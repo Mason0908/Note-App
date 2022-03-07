@@ -37,6 +37,16 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         if (p1 < 2){
             db.execSQL("ALTER TABLE notes ADD tags TEXT")
         }
+        if (p1 < 3){
+            val query = ("DROP TABLE IF EXISTS folders; \n")
+            db.execSQL(query)
+            val query2 = ("CREATE TABLE folders (\n" +
+                    "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
+                    "\ttitle TEXT, \n" +
+                    "\tcolor INTEGER DEFAULT 0 NOT NULL\n" +
+                    ");")
+            db.execSQL(query2)
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
