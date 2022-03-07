@@ -26,13 +26,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 "\tlocked INTEGER DEFAULT 0 NOT NULL,\n" +
                 "\tpassword TEXT,\n" +
                 "\tcolor INTEGER DEFAULT 0 NOT NULL\n" +
-                ");" +
-                "CREATE TABLE folders (\n" +
-                "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
-                "\ttitle TEXT, \n" +
-                "\tcolor INTEGER DEFAULT 0 NOT NULL\n" +
                 ");")
-
         // we are calling sqlite
         // method for executing our query
         db.execSQL(query)
@@ -43,12 +37,14 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             db.execSQL("ALTER TABLE notes ADD tags TEXT")
         }
         if (p1 < 3){
-            val query = ("CREATE TABLE folders (\n" +
+            val query = ("DROP TABLE IF EXISTS folders; \n")
+            db.execSQL(query)
+            val query2 = ("CREATE TABLE folders (\n" +
                     "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
                     "\ttitle TEXT, \n" +
                     "\tcolor INTEGER DEFAULT 0 NOT NULL\n" +
                     ");")
-            db.execSQL(query)
+            db.execSQL(query2)
         }
     }
 
