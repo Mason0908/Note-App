@@ -164,12 +164,35 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
         return null
     }
+
+    /**
+     * @Description Getting a folder from database by id
+     */
+    fun getFolderById(id: Int): Folder? {
+        if (hasFolder(id)) {
+            val db = this.readableDatabase
+            val cursor = db.rawQuery("SELECT * FROM $TABLE_FOLDERS_NAME WHERE id=$id", null)
+            cursor!!.moveToFirst()
+            return cursorToFolder(cursor)
+        }
+        return null
+    }
+
     /**
      * @Description Removing a note the database by id
      */
     fun removeNote(id: Int) {
         val db = this.writableDatabase
         db.delete(TABLE_NOTES_NAME, "id=$id", null)
+        db.close()
+    }
+
+    /**
+     * @Description Removing a folder the database by id
+     */
+    fun removeFolder(id: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLE_FOLDERS_NAME, "id=$id", null)
         db.close()
     }
 
@@ -188,11 +211,33 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
+     * @Description Editing a folder in the database by id
+     */
+    fun editFolder(id: Int, newTitle: String) {
+        val values = ContentValues()
+
+        values.put("title", newTitle)
+        val db = this.writableDatabase
+        db.update(TABLE_FOLDERS_NAME, values, "id=$id", null)
+        db.close()
+    }
+
+    /**
      * @Description Check if a note exist by id
      */
     fun hasNote(id: Int): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME WHERE id=$id", null)
+
+        return cursor.count == 1
+    }
+
+    /**
+     * @Description Check if a folder exist by id
+     */
+    fun hasFolder(id: Int): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_FOLDERS_NAME WHERE id=$id", null)
 
         return cursor.count == 1
     }
@@ -236,6 +281,18 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return filteredNotes
     }
 
+    /**
+     * @Description Get folders by searching criteria
+     */
+    fun getSearchFolders(criteria: String): MutableList<Folder> {
+        val filteredFolders = mutableListOf<Folder>()
+        val allFolders = getAllFolders()
+        filteredFolders.addAll(allFolders.filter { folder ->
+            folder.title.contains(criteria, true)
+        } as MutableList<Folder>)
+        return filteredFolders
+    }
+
     fun hasTag(tag: String, noteId: Int): Boolean {
         return getNoteById(noteId)!!.tags?.contains(tag) ?: false
     }
@@ -263,6 +320,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return note
     }
 
+    /**
+     * @Description Helper function to return all notes within a folder as a list of ids
+     */
     @SuppressLint("Range")
     fun getAllFolderNotes(id: Int): List<Int>? {
         val db = this.readableDatabase

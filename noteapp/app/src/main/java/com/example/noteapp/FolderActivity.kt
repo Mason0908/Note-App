@@ -48,7 +48,7 @@ class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         // Get reference for add button
         btnAdd = findViewById(R.id.btnAddFolder)
         btnAdd.setOnClickListener {
-            startActivity(Intent(this, AddNoteActivity::class.java))
+            startActivity(Intent(this, AddFolderActivity::class.java))
             finish()
         }
 
@@ -74,7 +74,6 @@ class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            // notes = db.getSearchNotes(newText)
             displayList()
         }
         return true

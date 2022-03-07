@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.graphics.Color
 import android.text.InputType
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
