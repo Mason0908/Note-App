@@ -39,6 +39,10 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
     }
 
+    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.version = oldVersion
+    }
+
     /**
      * @Description Adding a new note to the database
      */
@@ -185,7 +189,8 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
     @SuppressLint("Range")
     fun cursorToNote(cursor: Cursor?): Note?{
-        val note = Note(cursor!!.getInt(cursor.getColumnIndex("id")),
+        val note = Note(
+            cursor!!.getInt(cursor.getColumnIndex("id")),
             cursor!!.getInt(cursor.getColumnIndex("folder_id")),
             cursor!!.getString(cursor.getColumnIndex("title")),
             cursor!!.getString(cursor.getColumnIndex("body")),
