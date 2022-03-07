@@ -23,6 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="83dp"
@@ -92,6 +94,24 @@
                 <!--                    app:layout_constraintHorizontal_bias="0.0"-->
                 <!--                    app:layout_constraintStart_toEndOf="@+id/nDate"-->
                 <!--                    app:layout_constraintTop_toBottomOf="@+id/nTitle" />-->
+
+                <TextView
+                    android:id="@+id/nDate"
+                    android:layout_width="122dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="Sample Note Title"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/listId"
                     android:layout_width="wrap_content"

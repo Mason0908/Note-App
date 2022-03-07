@@ -35,6 +35,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
         val id: Int = notes[i].id
         viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i].color))
         viewHolder.nTitle.text = title
+        viewHolder.nDate.text = notes[i].modify_date
         viewHolder.nID.text = java.lang.String.valueOf(id)
         viewHolder.lock.isVisible = notes[i].isLocked
         viewHolder.nTitle.isVisible = !notes[i].isLocked
@@ -48,6 +49,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var nTitle: TextView = itemView.findViewById(R.id.nTitle)
         var nID: TextView = itemView.findViewById(R.id.listId)
+        var nDate: TextView = itemView.findViewById(R.id.nDate)
         val lock: ImageView = itemView.findViewById(R.id.imageLock)
         val noteCard: CardView = itemView.findViewById(R.id.noteCard)
         val imageNote: ImageView = itemView.findViewById(R.id.imageNote)
