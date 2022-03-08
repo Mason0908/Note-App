@@ -58,6 +58,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>):
             itemView.setOnClickListener { v ->
                 val i = Intent(v.context, ViewNoteActivity::class.java)
                 i.putExtra("displayId", notes[adapterPosition].id)
+                i.putExtra("folderId", notes[adapterPosition].folderId)
                 v.context.startActivity(i)
             }
         }
