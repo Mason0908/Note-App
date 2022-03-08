@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.graphics.Color
 import android.text.InputType
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
@@ -22,6 +23,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var bodyField: EditText
     private var noteId: Int = -1
     private val db = DB(this, null)
+    private var folderId: Int = -1
     var tags: String = ""
     private lateinit var tagBoard: RecyclerView
     private lateinit var adapter: TagAdapterForEdit
@@ -41,6 +43,8 @@ class AddNoteActivity : AppCompatActivity() {
         // Retrieve the note if exist
         val i = intent
         noteId = i.getIntExtra("editId", -1)
+        folderId = i.getIntExtra("folderId", -1)
+        // println("In add note, folderId is $folderId")
         if (noteId >= 0) {
             val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
@@ -68,7 +72,6 @@ class AddNoteActivity : AppCompatActivity() {
                 finish()
                 return true
             }
-            //Todo: enable adding tags
             R.id.addTag -> {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder.setTitle("Create tag")
@@ -117,13 +120,15 @@ class AddNoteActivity : AppCompatActivity() {
                 return true
             }
             R.id.saveChanges -> {
-//                println(tagsList.toString())
                 if (!db.hasNote(noteId)) {
-                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags)
+                    // println("Add note save changes: folderId is $folderId")
+                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags, folderId)
                 } else {
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
                 }
-                startActivity(Intent(this, MainActivity::class.java))
+                val i = Intent(this, MainActivity::class.java)
+                i.putExtra("folderId", folderId)
+                startActivity(i)
                 finish()
                 return true
             }

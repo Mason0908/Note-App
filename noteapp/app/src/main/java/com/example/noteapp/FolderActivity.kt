@@ -15,61 +15,45 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.widget.RadioButton
 import com.google.android.material.radiobutton.MaterialRadioButton
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
- * @Description Home screen
+ * @Description Folder screen
  */
-
-/**
- * TODO: figure out where exactly we want to delete or edit a folder (in the note main page?)
- */
-
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
-    private lateinit var noteBoard: RecyclerView
+class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+    private lateinit var folderBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
-    private lateinit var notes: MutableList<Note>
-    private var folderId: Int = -1
-    private lateinit var adapter: Adapter
+    private lateinit var folders: MutableList<Folder>
+    private lateinit var adapter: FolderAdapter
     private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_folders)
+        folders = db.getAllFolders()
+        val testFolders = db.getAllFolders()
 
-        val i = intent
-        folderId = i.getIntExtra("folderId", -1)
-        // println("folderID in main activity: $folderId")
-
-        notes = db.getAllFolderNotesObject(folderId)!!
-        // println("notes: $notes")
-        val testNotes = db.getAllNotes()
-
-        // Get reference for note list
-        noteBoard = findViewById(R.id.noteBoard)
+        // Get reference for folder list
+        folderBoard = findViewById(R.id.folderBoard)
 
         // Tying with the adapter
-        noteBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        adapter = Adapter(this, notes)
-        noteBoard.adapter = adapter
+        folderBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        adapter = FolderAdapter(this, folders)
+        folderBoard.adapter = adapter
 
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
         setSupportActionBar(actionBar)
-        supportActionBar!!.title = "My Notes"
+        supportActionBar!!.title = "My Folders"
 
         // Get reference for add button
-        btnAdd = findViewById(R.id.btnAdd)
+        btnAdd = findViewById(R.id.btnAddFolder)
         btnAdd.setOnClickListener {
-            val i = Intent(this, AddNoteActivity::class.java)
-            i.putExtra("folderId", folderId)
-            startActivity(i)
+            startActivity(Intent(this, AddFolderActivity::class.java))
             finish()
         }
 
         // Display list if exists
-        if (notes.size > 0){
+        if (folders.size > 0){
             displayList()
         }
     }
@@ -90,7 +74,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            notes = db.getSearchNotes(newText, folderId)
+            folders = db.getSearchFolders(newText)
             displayList()
         }
         return true
@@ -112,16 +96,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             when (view.getId()) {
                 R.id.sort_az ->
                     if (checked) {
-                        notes.sortBy { it.title }
+                        folders.sortBy { it.title }
                     }
                 R.id.sort_za ->
                     if (checked) {
-                        notes.sortByDescending { it.title }
-                    }
-                R.id.sort_date ->
-                    if (checked) {
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        notes.sortByDescending { dateFormat.parse(it.modify_date) }
+                        folders.sortByDescending { it.title }
                     }
             }
             displayList()
@@ -134,9 +113,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
      * @return void
      */
     private fun displayList() {
-        noteBoard.layoutManager = LinearLayoutManager(this)
-        val adapter = Adapter(this, notes)
-        noteBoard.adapter = adapter
+        folderBoard.layoutManager = LinearLayoutManager(this)
+        val adapter = FolderAdapter(this, folders)
+        folderBoard.adapter = adapter
     }
 
 }
