@@ -29,6 +29,7 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var adapter: TagAdapterForEdit
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        println("starting note addNoteActivity")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_addnote)
         titleField = findViewById(R.id.noteTitle)
@@ -44,6 +45,7 @@ class AddNoteActivity : AppCompatActivity() {
         val i = intent
         noteId = i.getIntExtra("editId", -1)
         folderId = i.getIntExtra("folderId", -1)
+        println("In add note, folderId is $folderId")
         if (noteId >= 0) {
             val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
@@ -71,7 +73,6 @@ class AddNoteActivity : AppCompatActivity() {
                 finish()
                 return true
             }
-            //Todo: enable adding tags
             R.id.addTag -> {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder.setTitle("Create tag")
@@ -122,11 +123,14 @@ class AddNoteActivity : AppCompatActivity() {
             R.id.saveChanges -> {
 //                println(tagsList.toString())
                 if (!db.hasNote(noteId)) {
+                    println("Add note save changes: folderId is $folderId")
                     db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags, folderId)
                 } else {
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
                 }
-                startActivity(Intent(this, MainActivity::class.java))
+                val i = Intent(this, MainActivity::class.java)
+                i.putExtra("folderId", folderId)
+                startActivity(i)
                 finish()
                 return true
             }

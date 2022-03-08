@@ -38,8 +38,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         val i = intent
         folderId = i.getIntExtra("folderId", -1)
+        println("folderID in main activity: $folderId")
 
         notes = db.getAllFolderNotesObject(folderId)!!
+        println("notes: $notes")
         val testNotes = db.getAllNotes()
 
         // Get reference for note list
@@ -58,7 +60,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         // Get reference for add button
         btnAdd = findViewById(R.id.btnAdd)
         btnAdd.setOnClickListener {
-            startActivity(Intent(this, AddNoteActivity::class.java))
+            val i = Intent(this, AddNoteActivity::class.java)
+            i.putExtra("folderId", folderId)
+            startActivity(i)
             finish()
         }
 
@@ -84,7 +88,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            notes = db.getSearchNotes(newText)
+            notes = db.getSearchNotes(newText, folderId)
             displayList()
         }
         return true

@@ -33,7 +33,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        if (p1 < 2){
+        if (p1 < 2) {
             db.execSQL("ALTER TABLE notes ADD tags TEXT")
         }
         if (p1 < 3){
@@ -51,7 +51,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.version = oldVersion
     }
-
+    
     /**
      * @Description Adding a new note to the database
      */
@@ -63,7 +63,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put("body", body)
         values.put("color", color)
         values.put("tags", tags)
-        values.put("folderId", folderId)
+        values.put("folder_id", folderId)
 
         val db = this.writableDatabase
 
@@ -265,10 +265,10 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     /**
      * @Description Get notes by searching criteria
      */
-    fun getSearchNotes(criteria: String): MutableList<Note> {
+    fun getSearchNotes(criteria: String, folderId: Int): MutableList<Note> {
         val filteredNotes = mutableListOf<Note>()
-        val allNotes = getAllNotes()
-        filteredNotes.addAll(allNotes.filter { note ->
+        val allNotes = getAllFolderNotesObject(folderId)
+        filteredNotes.addAll(allNotes!!.filter { note ->
             note.body.contains(
                 criteria,
                 true
@@ -321,13 +321,14 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
     @SuppressLint("Range")
     fun getAllFolderNotes(id: Int): List<Int>? {
+        print("id in getAllFolderNotes: $id")
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT id FROM $TABLE_NOTES_NAME as notes " +
                 "WHERE notes.folder_id IS $id", null)
-
         cursor!!.moveToFirst()
         val allNotesId = mutableListOf<Int>()
         if (cursor.count == 0) {
+            println("unfortunately, cursor.count was 0")
             return allNotesId
         }
 
@@ -335,6 +336,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val currId = cursor!!.getInt(cursor.getColumnIndex("id"))
             if (cursor != null){
                 allNotesId.add(currId)
+                println("$currId is added to allNotesId")
             }
         } while (cursor.moveToNext())
         cursor.close()
@@ -346,8 +348,8 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
     @SuppressLint("Range")
     fun getAllFolderNotesObject(id: Int): MutableList<Note>? {
-        val db = this.readableDatabase
         val allNotesId = getAllFolderNotes(id)
+        println("allNotesId: $allNotesId")
         var allNotes = mutableListOf<Note>()
 
         val notesIterator = allNotesId?.iterator()
@@ -355,6 +357,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val note = getNoteById(notesIterator.next())
             allNotes.add(note!!)
         }
+        println("allNotes at the end of getAllFolderNotesObject: $allNotes")
         return allNotes
     }
 
