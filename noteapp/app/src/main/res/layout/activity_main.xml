@@ -45,10 +45,10 @@
 
     <RadioGroup
         android:id="@+id/sortGroup"
-        android:layout_width="219dp"
-        android:layout_height="32dp"
+        android:layout_width="391dp"
+        android:layout_height="39dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="180dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/noteBoard"
@@ -73,6 +73,15 @@
             android:onClick="onRadioButtonClicked"
             android:text="Z to A"
             android:textColor="@color/black" />
+        <RadioButton
+            android:id="@+id/sort_date"
+            android:layout_width="84dp"
+            android:layout_height="31dp"
+            android:buttonTint="@color/black"
+            android:onClick="onRadioButtonClicked"
+            android:text="latest"
+            android:textColor="@color/black" />
+
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

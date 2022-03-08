@@ -11,5 +11,6 @@ data class Note (
     var isLocked: Boolean,
     var password: String?,
     var color: Int,
-    var tags: String?
+    var tags: String?,
+    var modify_date: String? = null
     )

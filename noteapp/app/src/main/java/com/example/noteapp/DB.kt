@@ -6,6 +6,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * @Description class for handling all database queries
@@ -46,6 +48,10 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     ");")
             db.execSQL(query2)
         }
+        if (p1 < 4){
+            val query = ("ALTER TABLE notes ADD modify_date DATETIME")
+            db.execSQL(query)
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -64,6 +70,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put("color", color)
         values.put("tags", tags)
         values.put("folder_id", folderId)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
 
         val db = this.writableDatabase
 
@@ -201,6 +210,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put("title", newTitle)
         values.put("body", newBody)
         values.put("tags", newTags)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
         val db = this.writableDatabase
         db.update(TABLE_NOTES_NAME, values, "id=$id", null)
         db.close()
@@ -312,6 +324,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             cursor!!.getString(cursor.getColumnIndex("password")),
             cursor!!.getInt(cursor.getColumnIndex("color")),
             cursor!!.getString(cursor.getColumnIndex("tags")),
+            cursor!!.getString(cursor.getColumnIndex("modify_date"))
         )
         return note
     }
@@ -384,7 +397,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private const val DATABASE_NAME = "NoteApp"
 
         // below is the variable for database version
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
 
         // below is the variable for notes table name
         const val TABLE_NOTES_NAME = "notes"
