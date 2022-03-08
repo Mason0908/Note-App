@@ -54,7 +54,6 @@ class AddFolderActivity : AppCompatActivity() {
                 return true
             }
             R.id.saveChanges -> {
-//                println(tagsList.toString())
                 if (!db.hasFolder(folderId)) {
                     db.addFolder(titleField.text.toString(), generateColour())
                 } else {

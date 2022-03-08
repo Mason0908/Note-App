@@ -116,7 +116,6 @@ class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         folderBoard.layoutManager = LinearLayoutManager(this)
         val adapter = FolderAdapter(this, folders)
         folderBoard.adapter = adapter
-        println("folder displayList")
     }
 
 }

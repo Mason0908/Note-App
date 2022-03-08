@@ -28,7 +28,6 @@ class FolderAdapter internal constructor(context: Context?, folders: MutableList
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = inflater.inflate(R.layout.folder_card, parent, false)
         return ViewHolder(view)
-        println("folder onCreateViewHolder")
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
@@ -56,7 +55,7 @@ class FolderAdapter internal constructor(context: Context?, folders: MutableList
             itemView.setOnClickListener { v ->
                 val i = Intent(v.context, MainActivity::class.java)
                 i.putExtra("folderId", folders[adapterPosition].id)
-                println("folder ID:" + folders[adapterPosition].id)
+                // println("folder ID:" + folders[adapterPosition].id)
                 // i.putExtra("notesListId", folders[adapterPosition].notesId)
                 // the above does not work for now (need parcelable data class)
                 v.context.startActivity(i)

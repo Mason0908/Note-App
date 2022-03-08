@@ -42,7 +42,7 @@ class ViewNoteActivity : AppCompatActivity() {
         val i = intent
         noteId = i.getIntExtra("displayId", -1)
         folderId = i.getIntExtra("folderId", -1)
-        println("In view note, folderId is $folderId")
+        // println("In view note, folderId is $folderId")
         if (noteId >= 0){
             val currNote = db.getNoteById(noteId)!!
             if (currNote.isLocked) {

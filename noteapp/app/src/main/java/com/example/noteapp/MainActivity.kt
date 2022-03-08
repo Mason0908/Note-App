@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         val i = intent
         folderId = i.getIntExtra("folderId", -1)
-        println("folderID in main activity: $folderId")
+        // println("folderID in main activity: $folderId")
 
         notes = db.getAllFolderNotesObject(folderId)!!
-        println("notes: $notes")
+        // println("notes: $notes")
         val testNotes = db.getAllNotes()
 
         // Get reference for note list
