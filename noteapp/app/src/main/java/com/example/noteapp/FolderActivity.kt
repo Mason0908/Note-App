@@ -88,7 +88,7 @@ class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
         return super.onOptionsItemSelected(item)
     }
-/*
+
     fun onRadioButtonClicked(view: View) {
         if (view is MaterialRadioButton) {
             val checked = view.isChecked
@@ -96,17 +96,17 @@ class FolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             when (view.getId()) {
                 R.id.sort_az ->
                     if (checked) {
-                        notes.sortBy { it.title }
+                        folders.sortBy { it.title }
                     }
                 R.id.sort_za ->
                     if (checked) {
-                        notes.sortByDescending { it.title }
+                        folders.sortByDescending { it.title }
                     }
             }
             displayList()
         }
     }
-*/
+
     /**
      * @Description Set up adapter for recycle view
      * @author Mason

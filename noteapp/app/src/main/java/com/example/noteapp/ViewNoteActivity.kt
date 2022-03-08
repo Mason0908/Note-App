@@ -69,7 +69,9 @@ class ViewNoteActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                startActivity(Intent(this, MainActivity::class.java))
+                val i = Intent(this, MainActivity::class.java)
+                i.putExtra("folderId", folderId)
+                startActivity(i)
                 finish()
                 return true
             }
@@ -87,7 +89,9 @@ class ViewNoteActivity : AppCompatActivity() {
                 if (noteId >= 0){
                     db.removeNote(noteId)
                 }
-                startActivity(Intent(this, MainActivity::class.java))
+                val i = Intent(this, MainActivity::class.java)
+                i.putExtra("folderId", folderId)
+                startActivity(i)
                 finish()
                 return true
             }
