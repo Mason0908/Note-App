@@ -19,6 +19,7 @@ class DBTest {
     private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val db = testDB(appContext, null)
     private var numOfNote = 0
+    private var numOfFolder = 0
 
     /**
      * @Description double check if the context created as desired
@@ -35,6 +36,60 @@ class DBTest {
     @Test
     fun initial_zero() {
         assertEquals(0, db.getAllNotes().size)
+        assertEquals(0, db.getAllFolders().size)
+    }
+
+    /**
+     * The folder tests should be place before the note test
+     * because note functions have associated with folders
+     */
+
+    @Test
+    fun add_delete_folder() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+
+    @Test
+    fun has_folder() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id
+        assertEquals(true, db.hasFolder(numOfFolder))
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+
+    @Test
+    fun edit_folder() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.editFolder(numOfFolder, "folder1")
+        assertEquals("folder1", db.getFolderById(numOfFolder)?.title)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+
+    @Test
+    fun get_search_folders() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        db.addFolder("f2f1", 2)
+        assertEquals(2, db.getAllFolders().size)
+        assertEquals(2, db.getSearchFolders("F1").size)
+        assertEquals(1, db.getSearchFolders("F2f1").size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.removeFolder(numOfFolder++)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
     }
 
     /**
@@ -44,7 +99,7 @@ class DBTest {
     @Test
     fun add_delete_notes() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null)
+        db.addNote("title", "body", 1, null, 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
         db.removeNote(numOfNote)
@@ -54,7 +109,7 @@ class DBTest {
     @Test
     fun edit_note() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null)
+        db.addNote("title", "body", 1, null, 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
         db.editNote(numOfNote, "new title", "new body", "add tag")
@@ -69,10 +124,10 @@ class DBTest {
     @Test
     fun get_note_by_id() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null)
+        db.addNote("title", "body", 1, null, 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
-        db.addNote("title2", "body2", 2, "tag")
+        db.addNote("title2", "body2", 2, "tag", 1)
         assertEquals(2, db.getAllNotes().size)
         val getNoteByID = db.getNoteById(numOfNote)
         assertEquals("title", getNoteByID?.title)
@@ -90,7 +145,7 @@ class DBTest {
     @Test
     fun has_note() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null)
+        db.addNote("title", "body", 1, null, 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
         assertEquals(true, db.hasNote(numOfNote))
@@ -101,7 +156,7 @@ class DBTest {
     @Test
     fun lock_note() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null)
+        db.addNote("title", "body", 1, null, 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
         db.lockNote(numOfNote, "password")
@@ -114,7 +169,7 @@ class DBTest {
     @Test
     fun unlock_note() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null)
+        db.addNote("title", "body", 1, null, 1)
         assertEquals(1, db.getAllNotes().size)
         db.lockNote(numOfNote, "password")
         numOfNote = db.getAllNotes()[0].id
@@ -128,18 +183,18 @@ class DBTest {
     @Test
     fun search_note() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "boDy", 1, null)
-        db.addNote("TITLE", "nAh", 2, null)
+        db.addNote("title", "body", 1, null, 1)
+        db.addNote("TITLE", "nAh", 2, null, 1)
         assertEquals(2, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
-        val searchTitle = db.getSearchNotes("tITLe")
+        val searchTitle = db.getSearchNotes("tITLe", 1)
         assertEquals(2, searchTitle.size)
         assertEquals("title", searchTitle[0].title)
         assertEquals("TITLE", searchTitle[1].title)
-        val searchBody1 = db.getSearchNotes("body")
+        val searchBody1 = db.getSearchNotes("body", 1)
         assertEquals(1, searchBody1.size)
-        assertEquals("boDy", searchBody1[0].body)
-        val searchBody2 = db.getSearchNotes("Nah")
+        assertEquals("body", searchBody1[0].body)
+        val searchBody2 = db.getSearchNotes("Nah", 1)
         assertEquals(1, searchBody2.size)
         assertEquals("nAh", searchBody2[0].body)
         db.removeNote(numOfNote++)
@@ -150,7 +205,7 @@ class DBTest {
     @Test
     fun has_tag() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, "has tag")
+        db.addNote("title", "body", 1, "has tag", 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
         assertEquals(false, db.hasTag("hh", numOfNote))
@@ -162,11 +217,34 @@ class DBTest {
     @Test
     fun get_tag() {
         assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, "has tag")
+        db.addNote("title", "body", 1, "has tag", 1)
         assertEquals(1, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
         assertEquals("has tag", db.getTags(numOfNote))
         db.removeNote(numOfNote)
         assertEquals(0, db.getAllNotes().size)
+    }
+
+    /**
+     * This is the combination of folder and notes
+     * Note that folderId is a foreign key in notes
+     */
+    @Test
+    fun get_notes_in_folder() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        assertEquals(0, db.getAllNotes().size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.addNote("title", "body", 1, null, numOfFolder)
+        db.addNote("title2", "body2", 2, null, numOfFolder)
+        numOfNote = db.getAllNotes()[0].id
+        assertEquals(2, db.getAllNotes().size)
+        assertEquals(2, db.getAllFolderNotes(numOfFolder)?.size)
+        db.removeNote(numOfNote++)
+        db.removeNote(numOfNote)
+        assertEquals(0, db.getAllNotes().size)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
     }
 }
