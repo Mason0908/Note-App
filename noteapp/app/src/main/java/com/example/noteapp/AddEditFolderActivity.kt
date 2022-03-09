@@ -19,15 +19,14 @@ import androidx.recyclerview.widget.RecyclerView
  * @Description Add/Edit folder screen
  */
 
-class AddFolderActivity : AppCompatActivity() {
+class AddEditFolderActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
-    private lateinit var bodyField: EditText
     private var folderId: Int = -1
     private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_addfolder)
+        setContentView(R.layout.activity_add_folder)
         titleField = findViewById(R.id.folderName)
 
         // showing the add note icon, add tag icon(TO-DO) and back button in action bar
@@ -38,7 +37,7 @@ class AddFolderActivity : AppCompatActivity() {
 
         // Retrieve the folder if exist
         val i = intent
-        folderId = i.getIntExtra("editId", -1)
+        folderId = i.getIntExtra("editFolderId", -1)
         if (folderId >= 0) {
             val currFolder = db.getFolderById(folderId)
             titleField.setText(currFolder?.title)
@@ -49,17 +48,23 @@ class AddFolderActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                startActivity(Intent(this, FolderActivity::class.java))
+                val i = Intent(this, ViewFolderActivity::class.java)
+                i.putExtra("goBackFolder", folderId)
+                startActivity(i)
                 finish()
                 return true
             }
+
             R.id.saveChanges -> {
                 if (!db.hasFolder(folderId)) {
                     db.addFolder(titleField.text.toString(), generateColour())
+                    startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     db.editFolder(folderId, titleField.text.toString())
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("goBackFolder", folderId)
+                    startActivity(i)
                 }
-                startActivity(Intent(this, FolderActivity::class.java))
                 finish()
                 return true
             }

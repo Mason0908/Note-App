@@ -23,8 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="83dp"
@@ -43,6 +41,25 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/notecartoon" />
+                <ImageView
+                    android:id="@+id/imageFolder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/foldercartoon" />
+                <ImageView
+                    android:id="@+id/imageLock"
+                    android:layout_width="60dp"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/lock_image" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -94,7 +111,6 @@
                 <!--                    app:layout_constraintHorizontal_bias="0.0"-->
                 <!--                    app:layout_constraintStart_toEndOf="@+id/nDate"-->
                 <!--                    app:layout_constraintTop_toBottomOf="@+id/nTitle" />-->
-
                 <TextView
                     android:id="@+id/nDate"
                     android:layout_width="122dp"
@@ -133,15 +149,5 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/imageLock"
-        android:layout_width="60dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/noteCard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/noteCard"
-        app:srcCompat="@drawable/lock_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
