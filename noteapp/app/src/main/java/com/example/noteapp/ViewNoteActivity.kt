@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
     private var noteId: Int = -1
+    private var folderId: Int? = null
     private val db = DB(this, null)
-    private var folderId: Int = -1
     private lateinit var tagBoard: RecyclerView
     private var tags: String = ""
     private lateinit var adapter: TagAdapterForView
@@ -40,9 +40,7 @@ class ViewNoteActivity : AppCompatActivity() {
 
         // Retrieve the note if exist
         val i = intent
-        noteId = i.getIntExtra("displayId", -1)
-        folderId = i.getIntExtra("folderId", -1)
-        // println("In view note, folderId is $folderId")
+        noteId = i.getIntExtra("displayNoteId", -1)
         if (noteId >= 0){
             val currNote = db.getNoteById(noteId)!!
             if (currNote.isLocked) {
@@ -52,26 +50,37 @@ class ViewNoteActivity : AppCompatActivity() {
                 noteDisplay.text = currNote.body
             }
             tags = db.getTags(noteId)
+            if (db.noteHasFolder(noteId)) {
+                folderId = db.getFolderIdOfNote(noteId)
+            }
         }
         // Get reference for tag list
-        tagBoard = findViewById(R.id.tagBoard)
+        if (!db.getNoteById(noteId)!!.isLocked) {
+            tagBoard = findViewById(R.id.tagBoard)
 
-        // Tying with the adapter
-        tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        adapter = TagAdapterForView(this, tags)
-        tagBoard.adapter = adapter
+            // Tying with the adapter
+            tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            adapter = TagAdapterForView(this, tags)
+            tagBoard.adapter = adapter
 
-        if (tags.isNotEmpty()){
-            displayTagsList()
+            if (tags.isNotEmpty()){
+                displayTagsList()
+            }
         }
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, MainActivity::class.java)
-                i.putExtra("folderId", folderId)
-                startActivity(i)
+                if (folderId != null) {
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("goBackFolder", folderId)
+                    startActivity(i)
+                } else {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
                 finish()
                 return true
             }
@@ -89,16 +98,20 @@ class ViewNoteActivity : AppCompatActivity() {
                 if (noteId >= 0){
                     db.removeNote(noteId)
                 }
-                val i = Intent(this, MainActivity::class.java)
-                i.putExtra("folderId", folderId)
-                startActivity(i)
+                if (folderId != null) {
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("goBackFolder", folderId)
+                    startActivity(i)
+                } else {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
                 finish()
                 return true
             }
             R.id.editNote -> {
-                val i = Intent(this, AddNoteActivity::class.java)
-                i.putExtra("editId", noteId)
-                i.putExtra("folderId", folderId)
+                val i = Intent(this, AddEditNoteActivity::class.java)
+                i.putExtra("editNoteId", noteId)
+                //i.putExtra("editFolderId", folderId)
                 startActivity(i)
                 finish()
                 return true

@@ -10,10 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class TagAdapterForEdit internal constructor(context: Context?, tags: String, tagBoard: RecyclerView, activity: AddNoteActivity):
+class TagAdapterForEdit internal constructor(context: Context?, tags: String, tagBoard: RecyclerView, activity: AddEditNoteActivity):
     RecyclerView.Adapter<TagAdapterForEdit.ViewHolder?>() {
     private val inflater: LayoutInflater
-    private val activity: AddNoteActivity
+    private val activity: AddEditNoteActivity
     private var tags: String = tags
     private val tagsList: MutableList<String>
     private val tagBoard: RecyclerView
