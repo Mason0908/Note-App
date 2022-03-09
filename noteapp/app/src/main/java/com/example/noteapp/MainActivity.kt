@@ -56,7 +56,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
         btnAddNote = findViewById(R.id.btnAddNote)
         btnAddNote.setOnClickListener {
-            startActivity(Intent(this, AddEditNoteActivity::class.java))
+            val i = Intent(this, AddEditNoteActivity::class.java)
+            i.putExtra("backMain", true)
+            startActivity(i)
             finish()
         }
         btnAdd = findViewById(R.id.btnAdd)
