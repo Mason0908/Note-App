@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var notes: MutableList<Note>
     private lateinit var folders: MutableList<Folder>
     private lateinit var adapter: Adapter
+    private var sortBy = ""
+    private var sortMethod = ""
     private val db = DB(this, null)
     private var isFABOpen = false
 
@@ -104,8 +106,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            notes = db.getSearchNotes(newText)
-            folders = db.getSearchFolders(newText)
+            if (sortBy != ""){
+                notes = db.getSearchNotes(newText, sortBy, sortMethod)
+                folders = db.getSearchFolders(newText, sortBy, sortMethod)
+            }
+            else {
+                notes = db.getSearchNotes(newText)
+                folders = db.getSearchFolders(newText)
+            }
             displayList()
         }
         return true
@@ -129,17 +137,23 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     if (checked) {
                         folders.sortBy { it.title }
                         notes.sortBy { it.title }
+                        sortBy = "title"
+                        sortMethod = "ASC"
                     }
                 R.id.sort_za ->
                     if (checked) {
                         folders.sortByDescending { it.title }
                         notes.sortByDescending { it.title }
+                        sortBy = "title"
+                        sortMethod = "DESC"
                     }
                 R.id.sort_date ->
                     if (checked){
                         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         folders.sortByDescending { dateFormat.parse(it.modify_date) }
                         notes.sortByDescending { dateFormat.parse(it.modify_date) }
+                        sortBy = "modify_date"
+                        sortMethod = "DESC"
                     }
             }
             displayList()
