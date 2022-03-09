@@ -20,6 +20,13 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     override fun onCreate(db: SQLiteDatabase) {
         // below is a sqlite query, where column names
         // along with their data types is given
+        val query2 = ("CREATE TABLE folders (\n" +
+                "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
+                "\ttitle TEXT, \n" +
+                "\tcolor INTEGER DEFAULT 0 NOT NULL,\n" +
+                "\tmodify_date DATETIME \n" +
+                ");")
+        db.execSQL(query2)
         val query = ("CREATE TABLE notes (\n" +
                 "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "\tfolder_id INTEGER,\n" +
@@ -27,35 +34,17 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 "\tbody TEXT,\n" +
                 "\tlocked INTEGER DEFAULT 0 NOT NULL,\n" +
                 "\tpassword TEXT,\n" +
-                "\tcolor INTEGER DEFAULT 0 NOT NULL\n" +
-                ");")
+                "\tcolor INTEGER DEFAULT 0 NOT NULL,\n" +
+                "\ttags TEXT,\n" +
+                "\tmodify_date DATETIME,\n" +
+                "FOREIGN KEY (folder_id) REFERENCES folders(id));")
         // we are calling sqlite
         // method for executing our query
         db.execSQL(query)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        if (p1 < 2) {
-            db.execSQL("ALTER TABLE notes ADD tags TEXT")
-        }
-        if (p1 < 3){
-            val query = ("DROP TABLE IF EXISTS folders; \n")
-            db.execSQL(query)
-            val query2 = ("CREATE TABLE folders (\n" +
-                    "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
-                    "\ttitle TEXT, \n" +
-                    "\tcolor INTEGER DEFAULT 0 NOT NULL\n" +
-                    ");")
-            db.execSQL(query2)
-        }
-        if (p1 < 4){
-            val query = ("ALTER TABLE notes ADD modify_date DATETIME")
-            db.execSQL(query)
-        }
-        if (p1 < 5){
-            val query = ("ALTER TABLE folders ADD modify_date DATETIME")
-            db.execSQL(query)
-        }
+
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -461,7 +450,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private const val DATABASE_NAME = "NoteApp"
 
         // below is the variable for database version
-        private const val DATABASE_VERSION = 5
+        private const val DATABASE_VERSION = 1
 
         // below is the variable for notes table name
         const val TABLE_NOTES_NAME = "notes"
