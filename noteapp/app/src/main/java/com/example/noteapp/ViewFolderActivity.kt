@@ -18,6 +18,8 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var notes: MutableList<Note>
+    private var sortBy = ""
+    private var sortMethod = ""
     private var folderId: Int = -1
     private lateinit var adapter: NoteAdapter
     private val db = DB(this, null)
@@ -88,7 +90,12 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            notes = db.getSearchNotesInFolders(newText, folderId)
+            if (sortBy != ""){
+                notes = db.getSearchNotesInFolders(newText, folderId, sortBy, sortMethod)
+            }
+            else{
+                notes = db.getSearchNotesInFolders(newText, folderId)
+            }
             displayList()
         }
         return true
@@ -134,15 +141,21 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 R.id.sort_az ->
                     if (checked) {
                         notes.sortBy { it.title }
+                        sortBy = "title"
+                        sortMethod = "ASC"
                     }
                 R.id.sort_za ->
                     if (checked) {
                         notes.sortByDescending { it.title }
+                        sortBy = "title"
+                        sortMethod = "DESC"
                     }
                 R.id.sort_date ->
                     if (checked) {
                         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         notes.sortByDescending { dateFormat.parse(it.modify_date) }
+                        sortBy = "modify_date"
+                        sortMethod = "DESC"
                     }
             }
             displayList()
