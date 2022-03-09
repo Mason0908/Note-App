@@ -45,7 +45,6 @@ class AddEditNoteActivity : AppCompatActivity() {
         noteId = i.getIntExtra("editNoteId", -1)
         folderId = i.getIntExtra("currFolderId", -1)
         backMain = i.getBooleanExtra("backMain", true)
-        println("bool is $backMain")
         if (noteId >= 0) {
             val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
