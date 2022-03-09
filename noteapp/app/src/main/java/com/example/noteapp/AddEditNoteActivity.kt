@@ -138,12 +138,12 @@ class AddEditNoteActivity : AppCompatActivity() {
                 } else {
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
                 }
-                if (db.noteHasFolder(noteId)) {
+                if (backMain) {
+                    startActivity(Intent(this, MainActivity::class.java))
+                } else {
                     val i = Intent(this, ViewFolderActivity::class.java)
                     i.putExtra("goBackFolder", folderId)
                     startActivity(i)
-                } else {
-                    startActivity(Intent(this, MainActivity::class.java))
                 }
                 finish()
                 return true
