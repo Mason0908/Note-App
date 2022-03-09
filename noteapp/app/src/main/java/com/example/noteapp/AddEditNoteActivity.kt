@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
-import android.graphics.Color
 import android.text.InputType
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
@@ -18,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
  * @Description Add/Edit note screen
  */
 
-class AddNoteActivity : AppCompatActivity() {
+class AddEditNoteActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
     private lateinit var bodyField: EditText
     private var noteId: Int = -1
+    private var folderId: Int? = -1
     private val db = DB(this, null)
-    private var folderId: Int = -1
     var tags: String = ""
     private lateinit var tagBoard: RecyclerView
     private lateinit var adapter: TagAdapterForEdit
@@ -42,15 +41,17 @@ class AddNoteActivity : AppCompatActivity() {
 
         // Retrieve the note if exist
         val i = intent
-        noteId = i.getIntExtra("editId", -1)
-        folderId = i.getIntExtra("folderId", -1)
-        // println("In add note, folderId is $folderId")
+        noteId = i.getIntExtra("editNoteId", -1)
+        folderId = i.getIntExtra("currFolderId", -1)
         if (noteId >= 0) {
             val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
             bodyField.setText(currNote?.body)
             supportActionBar!!.title = currNote?.title
             tags = db.getTags(noteId)
+        }
+        if (folderId!! < 0) {
+            folderId = db.getFolderIdOfNote(noteId)
         }
         // Get reference for tag list
         tagBoard = findViewById(R.id.tagBoard)
@@ -121,14 +122,17 @@ class AddNoteActivity : AppCompatActivity() {
             }
             R.id.saveChanges -> {
                 if (!db.hasNote(noteId)) {
-                    // println("Add note save changes: folderId is $folderId")
                     db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags, folderId)
                 } else {
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
                 }
-                val i = Intent(this, MainActivity::class.java)
-                i.putExtra("folderId", folderId)
-                startActivity(i)
+                if (db.noteHasFolder(noteId)) {
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("goBackFolder", folderId)
+                    startActivity(i)
+                } else {
+                    startActivity(Intent(this, MainActivity::class.java))
+                }
                 finish()
                 return true
             }
