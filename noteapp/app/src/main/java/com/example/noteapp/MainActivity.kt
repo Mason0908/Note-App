@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
+import java.text.SimpleDateFormat
 
 /**
  * @Description Home screen
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         setContentView(R.layout.activity_main)
         notes = db.getNotesWithNoFolder()
         folders = db.getAllFolders()
+        println("folder: " + folders)
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
@@ -130,6 +132,12 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     if (checked) {
                         folders.sortByDescending { it.title }
                         notes.sortByDescending { it.title }
+                    }
+                R.id.sort_date ->
+                    if (checked){
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        folders.sortByDescending { dateFormat.parse(it.modify_date) }
+                        notes.sortByDescending { dateFormat.parse(it.modify_date) }
                     }
             }
             displayList()

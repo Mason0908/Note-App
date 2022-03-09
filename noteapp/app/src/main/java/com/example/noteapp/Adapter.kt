@@ -50,7 +50,8 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
             viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, folders[i].color))
             viewHolder.nTitle.text = title
             viewHolder.nID.text = java.lang.String.valueOf(id)
-            viewHolder.nDate.text = ""
+            println("modi date: " + folders[i].modify_date)
+            viewHolder.nDate.text = folders[i].modify_date
             viewHolder.lock.isVisible = false
             viewHolder.imageNote.isVisible = false
             viewHolder.imageFolder.isVisible = true
