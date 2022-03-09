@@ -22,6 +22,7 @@ class AddEditNoteActivity : AppCompatActivity() {
     private lateinit var bodyField: EditText
     private var noteId: Int = -1
     private var folderId: Int? = -1
+    private var backMain: Boolean = true
     private val db = DB(this, null)
     var tags: String = ""
     private lateinit var tagBoard: RecyclerView
@@ -43,6 +44,8 @@ class AddEditNoteActivity : AppCompatActivity() {
         val i = intent
         noteId = i.getIntExtra("editNoteId", -1)
         folderId = i.getIntExtra("currFolderId", -1)
+        backMain = i.getBooleanExtra("backMain", true)
+        println("bool is $backMain")
         if (noteId >= 0) {
             val currNote = db.getNoteById(noteId)
             titleField.setText(currNote?.title)
@@ -69,11 +72,18 @@ class AddEditNoteActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, ViewFolderActivity::class.java)
-                i.putExtra("goBackFolder", folderId)
-                startActivity(i)
-                finish()
-                return true
+                if (backMain) {
+                    val i = Intent(this, MainActivity::class.java)
+                    startActivity(i)
+                    finish()
+                    return true
+                } else {
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("goBackFolder", folderId)
+                    startActivity(i)
+                    finish()
+                    return true
+                }
             }
             R.id.addTag -> {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)

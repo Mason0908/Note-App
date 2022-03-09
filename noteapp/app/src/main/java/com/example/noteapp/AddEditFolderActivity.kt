@@ -49,7 +49,6 @@ class AddEditFolderActivity : AppCompatActivity() {
         when (item.itemId){
             android.R.id.home -> {
                 val i = Intent(this, MainActivity::class.java)
-                i.putExtra("goBackFolder", folderId)
                 startActivity(i)
                 finish()
                 return true

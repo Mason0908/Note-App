@@ -62,6 +62,7 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         btnAdd.setOnClickListener {
             val i = Intent(this, AddEditNoteActivity::class.java)
             i.putExtra("currFolderId", folderId)
+            i.putExtra("backMain", false)
             startActivity(i)
             finish()
         }

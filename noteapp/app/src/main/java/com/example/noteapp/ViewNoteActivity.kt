@@ -77,6 +77,7 @@ class ViewNoteActivity : AppCompatActivity() {
                 if (folderId != null) {
                     val i = Intent(this, ViewFolderActivity::class.java)
                     i.putExtra("goBackFolder", folderId)
+                    i.putExtra("backMain", 0)
                     startActivity(i)
                 } else {
                     startActivity(Intent(this, MainActivity::class.java))
@@ -198,7 +199,7 @@ class ViewNoteActivity : AppCompatActivity() {
             if(btnShowHide.text.toString() == "Show"){
                 pwd.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 btnShowHide.text = "Hide"
-            } else{
+            } else {
                 pwd.transformationMethod = PasswordTransformationMethod.getInstance()
                 btnShowHide.text = "Show"
             }
