@@ -69,7 +69,9 @@ class AddEditNoteActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                startActivity(Intent(this, MainActivity::class.java))
+                val i = Intent(this, ViewFolderActivity::class.java)
+                i.putExtra("goBackFolder", folderId)
+                startActivity(i)
                 finish()
                 return true
             }

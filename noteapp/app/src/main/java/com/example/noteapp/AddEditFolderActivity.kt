@@ -48,7 +48,7 @@ class AddEditFolderActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, ViewFolderActivity::class.java)
+                val i = Intent(this, MainActivity::class.java)
                 i.putExtra("goBackFolder", folderId)
                 startActivity(i)
                 finish()
