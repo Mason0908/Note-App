@@ -52,6 +52,10 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val query = ("ALTER TABLE notes ADD modify_date DATETIME")
             db.execSQL(query)
         }
+        if (p1 < 5){
+            val query = ("ALTER TABLE folders ADD modify_date DATETIME")
+            db.execSQL(query)
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -90,6 +94,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         values.put("title", title)
         values.put("color", color)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
 
         val db = this.writableDatabase
 
@@ -268,6 +275,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val values = ContentValues()
 
         values.put("title", newTitle)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
         val db = this.writableDatabase
         db.update(TABLE_FOLDERS_NAME, values, "id=$id", null)
         db.close()
@@ -439,6 +449,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val folder = Folder(id, notes!!,
             cursor!!.getString(cursor.getColumnIndex("title")),
             cursor!!.getInt(cursor.getColumnIndex("color")),
+            cursor!!.getString(cursor.getColumnIndex("modify_date"))
         )
         return folder
     }
@@ -450,7 +461,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private const val DATABASE_NAME = "NoteApp"
 
         // below is the variable for database version
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 5
 
         // below is the variable for notes table name
         const val TABLE_NOTES_NAME = "notes"

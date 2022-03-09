@@ -13,5 +13,6 @@ data class Folder (
     val id: Int,
     var notesId: List<Int>,
     var title: String,
-    var color: Int
+    var color: Int,
+    var modify_date: String?
 )
