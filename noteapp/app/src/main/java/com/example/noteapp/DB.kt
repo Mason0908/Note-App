@@ -24,7 +24,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \n" +
                 "\ttitle TEXT, \n" +
                 "\tcolor INTEGER DEFAULT 0 NOT NULL,\n" +
-                "\tmodify_date DATETIME,\n" +
+                "\tmodify_date DATETIME \n" +
                 ");")
         db.execSQL(query2)
         val query = ("CREATE TABLE notes (\n" +
