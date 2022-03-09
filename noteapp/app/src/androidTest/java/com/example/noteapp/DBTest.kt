@@ -21,6 +21,7 @@ class DBTest {
     private var numOfNote = 0
     private var numOfFolder = 0
 
+    // region Basic Setup
     /**
      * @Description double check if the context created as desired
      */
@@ -39,6 +40,9 @@ class DBTest {
         assertEquals(0, db.getAllFolders().size)
     }
 
+    // endregion
+
+    // region Folder Tests
     /**
      * The folder tests should be place before the note test
      * because note functions have associated with folders
@@ -91,6 +95,14 @@ class DBTest {
         db.removeFolder(numOfFolder)
         assertEquals(0, db.getAllFolders().size)
     }
+
+    // endregion
+
+    // region Note Tests
+
+    /**
+     * Notes tests
+     */
 
     /**
      * Test adding and deleting notes functionality
@@ -187,14 +199,14 @@ class DBTest {
         db.addNote("TITLE", "nAh", 2, null, 1)
         assertEquals(2, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id
-        val searchTitle = db.getSearchNotes("tITLe", 1)
+        val searchTitle = db.getSearchNotes("tITLe")
         assertEquals(2, searchTitle.size)
         assertEquals("title", searchTitle[0].title)
         assertEquals("TITLE", searchTitle[1].title)
-        val searchBody1 = db.getSearchNotes("body", 1)
+        val searchBody1 = db.getSearchNotes("body")
         assertEquals(1, searchBody1.size)
         assertEquals("body", searchBody1[0].body)
-        val searchBody2 = db.getSearchNotes("Nah", 1)
+        val searchBody2 = db.getSearchNotes("Nah")
         assertEquals(1, searchBody2.size)
         assertEquals("nAh", searchBody2[0].body)
         db.removeNote(numOfNote++)
@@ -225,6 +237,53 @@ class DBTest {
         assertEquals(0, db.getAllNotes().size)
     }
 
+    @Test
+    fun get_folder_id_of_note() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.addNote("title", "body", 1, null, numOfFolder)
+        assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id
+        assertEquals(numOfFolder, db.getFolderIdOfNote(numOfNote))
+        db.removeNote(numOfNote)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+
+    @Test
+    fun note_has_folder_bool() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.addNote("title", "body", 1, null, numOfFolder)
+        assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id
+        assertEquals(true, db.noteHasFolder(numOfNote))
+        db.removeNote(numOfNote)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+
+    //endregion
+
+    // region Combination
+    @Test
+    fun all_notes_with_no_folder() {
+        assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, null)
+        assertEquals(1, db.getAllNotes().size)
+        db.addNote("title2", "body2", 1, null, null)
+        assertEquals(2, db.getAllNotes().size)
+        assertEquals(2, db.getNotesWithNoFolder().size)
+        numOfNote = db.getAllNotes()[0].id
+        db.removeNote(numOfNote++)
+        db.removeNote(numOfNote)
+        assertEquals(0, db.getAllNotes().size)
+    }
+
     /**
      * This is the combination of folder and notes
      * Note that folderId is a foreign key in notes
@@ -247,4 +306,25 @@ class DBTest {
         db.removeFolder(numOfFolder)
         assertEquals(0, db.getAllFolders().size)
     }
+
+    @Test
+    fun search_notes_in_folder() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        assertEquals(0, db.getAllNotes().size)
+        numOfFolder = db.getAllFolders()[0].id
+        db.addNote("title", "body", 1, null, numOfFolder)
+        db.addNote("title2", "body2", 2, null, numOfFolder)
+        numOfNote = db.getAllNotes()[0].id
+        assertEquals(0, db.getSearchNotesInFolders("TT", numOfFolder).size)
+        assertEquals(2, db.getSearchNotesInFolders("TITLE", numOfFolder).size)
+        assertEquals(1, db.getSearchNotesInFolders("BOdy2", numOfFolder).size)
+        db.removeNote(numOfNote++)
+        db.removeNote(numOfNote)
+        assertEquals(0, db.getAllNotes().size)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+    // endregion
 }

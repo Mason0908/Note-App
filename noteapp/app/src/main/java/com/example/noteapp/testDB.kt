@@ -52,6 +52,10 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val query = ("ALTER TABLE notes ADD modify_date DATETIME")
             db.execSQL(query)
         }
+        if (p1 < 5){
+            val query = ("ALTER TABLE folders ADD modify_date DATETIME")
+            db.execSQL(query)
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -61,7 +65,7 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     /**
      * @Description Adding a new note to the database
      */
-    fun addNote(title: String, body: String, color: Int, tags: String?, folderId: Int){
+    fun addNote(title: String, body: String, color: Int, tags: String?, folderId: Int?){
 
         val values = ContentValues()
 
@@ -90,6 +94,9 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         values.put("title", title)
         values.put("color", color)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
 
         val db = this.writableDatabase
 
@@ -106,6 +113,32 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.readableDatabase
 
         val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME", null)
+
+        cursor!!.moveToFirst()
+        val allNotes = mutableListOf<Note>()
+        if (cursor.count == 0){
+            return allNotes
+        }
+        var currNote: Note?;
+        currNote = cursorToNote(cursor)
+        if (currNote != null){
+            allNotes.add(currNote)
+        }
+        while (cursor.moveToNext()) {
+            currNote = cursorToNote(cursor)
+            if (currNote != null) {
+                allNotes.add(currNote)
+            }
+        }
+        cursor.close()
+        return allNotes
+    }
+
+    fun getNotesWithNoFolder(): MutableList<Note> {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME WHERE folder_id is NULL", null)
 
         cursor!!.moveToFirst()
         val allNotes = mutableListOf<Note>()
@@ -171,6 +204,23 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
+     * @Description Get folder id of a note
+     */
+    fun getFolderIdOfNote(noteId: Int): Int? {
+        val note = getNoteById(noteId)
+        return note?.folderId ?: null
+    }
+
+    /**
+     * @Description Check if a note has a folder id
+     */
+    fun noteHasFolder(id: Int): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME WHERE id=$id and folder_id is not NULL", null)
+        return cursor.count != 0
+    }
+
+    /**
      * @Description Getting a folder from database by id
      */
     fun getFolderById(id: Int): Folder? {
@@ -225,6 +275,9 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val values = ContentValues()
 
         values.put("title", newTitle)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
         val db = this.writableDatabase
         db.update(TABLE_FOLDERS_NAME, values, "id=$id", null)
         db.close()
@@ -275,9 +328,24 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
-     * @Description Get notes by searching criteria
+     * @Description Get notes in the main board by searching criteria
      */
-    fun getSearchNotes(criteria: String, folderId: Int): MutableList<Note> {
+    fun getSearchNotes(criteria: String): MutableList<Note> {
+        val filteredNotes = mutableListOf<Note>()
+        val allNotes = getAllNotes()
+        filteredNotes.addAll(allNotes.filter { note ->
+            note.body.contains(
+                criteria,
+                true
+            ) || note.title.contains(criteria, true)
+        } as MutableList<Note>)
+        return filteredNotes
+    }
+
+    /**
+     * @Description Get notes within a folder by searching criteria
+     */
+    fun getSearchNotesInFolders(criteria: String, folderId: Int): MutableList<Note> {
         val filteredNotes = mutableListOf<Note>()
         val allNotes = getAllFolderNotesObject(folderId)
         filteredNotes.addAll(allNotes!!.filter { note ->
@@ -290,7 +358,7 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
-     * @Description Get folders by searching criteria
+     * @Description Get folders in the main board by searching criteria
      */
     fun getSearchFolders(criteria: String): MutableList<Folder> {
         val filteredFolders = mutableListOf<Folder>()
@@ -334,14 +402,12 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
     @SuppressLint("Range")
     fun getAllFolderNotes(id: Int): List<Int>? {
-        print("id in getAllFolderNotes: $id")
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT id FROM $TABLE_NOTES_NAME as notes " +
                 "WHERE notes.folder_id IS $id", null)
         cursor!!.moveToFirst()
         val allNotesId = mutableListOf<Int>()
         if (cursor.count == 0) {
-            // println("unfortunately, cursor.count was 0")
             return allNotesId
         }
 
@@ -359,7 +425,7 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      * @Description Return all notes within a folder as a list of notes
      */
     @SuppressLint("Range")
-    fun getAllFolderNotesObject(id: Int): MutableList<Note>? {
+    fun getAllFolderNotesObject(id: Int): MutableList<Note> {
         val allNotesId = getAllFolderNotes(id)
         var allNotes = mutableListOf<Note>()
 
@@ -368,7 +434,6 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val note = getNoteById(notesIterator.next())
             allNotes.add(note!!)
         }
-        // println("allNotes at the end of getAllFolderNotesObject: $allNotes")
         return allNotes
     }
 
@@ -384,6 +449,7 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val folder = Folder(id, notes!!,
             cursor!!.getString(cursor.getColumnIndex("title")),
             cursor!!.getInt(cursor.getColumnIndex("color")),
+            cursor!!.getString(cursor.getColumnIndex("modify_date"))
         )
         return folder
     }
