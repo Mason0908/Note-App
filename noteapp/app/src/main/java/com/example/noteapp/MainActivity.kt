@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
 
         // Display list if exists
-        if (notes.size > 0){
+        if (notes.size > 0 || folders.size > 0){
             displayList()
         }
     }
