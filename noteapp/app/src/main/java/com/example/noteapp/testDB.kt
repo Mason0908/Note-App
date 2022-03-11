@@ -447,7 +447,7 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         // here we have defined variables for our database
 
         // below is variable for database name
-        private const val DATABASE_NAME = "NoteApp"
+        private const val DATABASE_NAME = "TestDatabase"
 
         // below is the variable for database version
         private const val DATABASE_VERSION = 1
