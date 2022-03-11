@@ -359,7 +359,8 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     fun hasTag(tag: String, noteId: Int): Boolean {
-        return getNoteById(noteId)!!.tags?.contains(tag) ?: false
+        val listOfTags = getNoteById(noteId)!!.tags?.split(",") ?: listOf()
+        return listOfTags!!.contains(tag)
     }
 
     fun getTags(id: Int): String {

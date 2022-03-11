@@ -101,7 +101,8 @@ class AddEditNoteActivity : AppCompatActivity() {
                                 input.error = "Tag name cannot be empty"
                             } else {
                                 val tag = input.text.toString()
-                                if (tags.contains(tag)) {
+                                val listOfTags = tags.split(",")
+                                if (listOfTags.contains(tag)) {
                                     input.error = "Tag already exists"
                                 } else {
                                     tags += "$tag,"
@@ -114,7 +115,8 @@ class AddEditNoteActivity : AppCompatActivity() {
                                 input.error = "Tag name cannot be empty"
                             } else {
                                 val tag = input.text.toString()
-                                if (db.hasTag(tag, noteId) || tags.contains(tag)) {
+                                val listOfTags = tags.split(",")
+                                if (db.hasTag(tag, noteId) || listOfTags.contains(tag)) {
                                     input.error = "Tag already exists"
                                 } else {
                                     tags += "$tag,"
