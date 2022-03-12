@@ -8,7 +8,7 @@
     android:background="#FAFAFA"
     android:padding="5dp">
     <androidx.cardview.widget.CardView
-        android:id="@+id/noteCard"
+        android:id="@+id/folderCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
@@ -33,15 +33,6 @@
 
 
                 <ImageView
-                    android:id="@+id/imageNote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/notecartoon" />
-                <ImageView
                     android:id="@+id/imageFolder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,16 +41,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/foldercartoon" />
-                <ImageView
-                    android:id="@+id/imageLock"
-                    android:layout_width="60dp"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/lock_image" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,14 +52,14 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/nTitle"
+                    android:id="@+id/fTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/bigheroes"
-                    android:text="Sample Note Title"
+                    android:text="Sample Folder Title"
                     android:textAlignment="viewStart"
                     android:textAllCaps="false"
                     android:textColor="@android:color/background_dark"
@@ -112,24 +93,7 @@
                 <!--                    app:layout_constraintStart_toEndOf="@+id/nDate"-->
                 <!--                    app:layout_constraintTop_toBottomOf="@+id/nTitle" />-->
                 <TextView
-                    android:id="@+id/nDate"
-                    android:layout_width="122dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="Sample Note Title"
-                    android:textAlignment="viewStart"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/listId"
+                    android:id="@+id/folderListId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="7dp"
@@ -139,7 +103,7 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/nTitle"
+                    app:layout_constraintStart_toEndOf="@+id/fTitle"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -148,6 +112,5 @@
 
 
     </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

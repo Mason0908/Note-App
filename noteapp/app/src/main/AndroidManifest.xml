@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.noteapp">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".Model"
         android:allowBackup="true"
@@ -11,7 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Noteapp">
         <activity
-            android:name=".LockNoteActivity"
+            android:name=".AddEditFolderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ViewFolderActivity"
             android:exported="false" />
         <activity
             android:name=".ViewNoteActivity"
@@ -26,9 +31,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddNoteActivity"
-            android:exported="true">
-        </activity>
+            android:name=".AddEditNoteActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

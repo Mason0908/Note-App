@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/lyira/OneDrive/Documents/cs398_project/noteapp/app/src/main/res/layout/activity_addnote.xml" value="0.2713541666666667" />
+        <entry key="..\:/Users/lyira/OneDrive/Documents/cs398_project/noteapp/app/src/main/res/layout/activity_folders.xml" value="0.22333333333333336" />
+        <entry key="..\:/Users/lyira/OneDrive/Documents/cs398_project/noteapp/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/lyira/OneDrive/Documents/cs398_project/noteapp/app/src/main/res/layout/folder_card.xml" value="0.32083333333333336" />
+        <entry key="..\:/Users/lyira/OneDrive/Documents/cs398_project/noteapp/app/src/main/res/layout/note_card.xml" value="0.32083333333333336" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/add_icon.xml" value="0.1875" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/delete_icon.xml" value="0.1" />
@@ -27,6 +32,9 @@
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/view_menu_unlcok.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_view_folder.xml" value="0.13697916666666668" />
+        <entry key="app/src/main/res/layout/activity_view_note.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/note_card.xml" value="0.28421052631578947" />
       </map>
     </option>
   </component>

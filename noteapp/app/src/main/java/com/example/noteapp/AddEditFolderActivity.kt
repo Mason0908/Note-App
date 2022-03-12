@@ -1,69 +1,69 @@
 package com.example.noteapp
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.graphics.Color
+import android.icu.text.CaseMap
+import android.text.InputType
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 /**
- * @Description Add/Edit note screen
+ * @Description Add/Edit folder screen
  */
 
-class AddNoteActivity : AppCompatActivity() {
+class AddEditFolderActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
-    private lateinit var bodyField: EditText
-    private var noteId: Int = -1
-
-    private lateinit var btnSave: FloatingActionButton
+    private var folderId: Int = -1
+    private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_addnote)
-        titleField = findViewById(R.id.noteTitle)
-        bodyField = findViewById(R.id.noteBody)
+        setContentView(R.layout.activity_add_folder)
+        titleField = findViewById(R.id.folderName)
 
         // showing the add note icon, add tag icon(TO-DO) and back button in action bar
         val actionBar:Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(actionBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "New Note"
+        supportActionBar!!.title = "New Folder"
 
-        // Retrieve the note if exist
+        // Retrieve the folder if exist
         val i = intent
-        noteId = i.getIntExtra("editId", -1)
-        if (noteId >= 0) {
-            val currNote = (this.application as Model).getNoteById(noteId)
-            titleField.setText(currNote?.title)
-            bodyField.setText(currNote?.body)
-            supportActionBar!!.title = currNote?.title
+        folderId = i.getIntExtra("editFolderId", -1)
+        if (folderId >= 0) {
+            val currFolder = db.getFolderById(folderId)
+            titleField.setText(currFolder?.title)
+            supportActionBar!!.title = currFolder?.title
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                startActivity(Intent(this, MainActivity::class.java))
+                val i = Intent(this, MainActivity::class.java)
+                startActivity(i)
                 finish()
                 return true
             }
-            //Todo: enable adding tags
-            R.id.addTag -> {
-                return true
-            }
+
             R.id.saveChanges -> {
-                val app = this.application as Model
-                if (!app.hasNote(noteId)) {
-                    app.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour())
+                if (!db.hasFolder(folderId)) {
+                    db.addFolder(titleField.text.toString(), generateColour())
+                    startActivity(Intent(this, MainActivity::class.java))
                 } else {
-                    app.editNote(noteId, titleField.text.toString(), bodyField.text.toString())
+                    db.editFolder(folderId, titleField.text.toString())
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("goBackFolder", folderId)
+                    startActivity(i)
                 }
-                startActivity(Intent(this, MainActivity::class.java))
                 finish()
                 return true
             }
@@ -79,7 +79,7 @@ class AddNoteActivity : AppCompatActivity() {
 
     private fun generateColour(): Int {
         val num = (1..4).random()
-        var color = 0
+        var color: Int = 0
         when(num) {
             1 -> {
                 color = R.color.lightyellow
@@ -96,4 +96,5 @@ class AddNoteActivity : AppCompatActivity() {
         }
         return color
     }
+
 }
