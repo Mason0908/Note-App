@@ -14,42 +14,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import java.text.SimpleDateFormat
 
-class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+class ViewDeletedActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
-    private lateinit var btnAdd: FloatingActionButton
     private lateinit var notes: MutableList<Note>
-    private var sortBy = ""
-    private var sortMethod = ""
+    private var sortBy = "modify_date"
+    private var sortMethod = "DESC"
     private var folderId: Int = -1
     private lateinit var adapter: NoteAdapter
     private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        println("deleted view")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_folder)
+        setContentView(R.layout.activity_view_deleted)
 
         val actionBar: Toolbar = findViewById(R.id.toolbar)
         // showing the back button in action bar
         setSupportActionBar(actionBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val i = intent
-        folderId = i.getIntExtra("displayFolderId", -1)
-        if (folderId >= 0){
-            val currFolder = db.getFolderById(folderId)!!
-            supportActionBar!!.title = currFolder.title
-        } else {
-            folderId = i.getIntExtra("goBackFolder", -1)
-            if (folderId >= 0) {
-                val currFolder = db.getFolderById(folderId)
-                if (currFolder != null) {
-                    supportActionBar!!.title = currFolder.title
-                }
-            }
-        }
+        val currFolder = db.getFolderById(folderId)!!
+        supportActionBar!!.title = currFolder.title
 
 
         notes = db.getAllFolderNotesObject(folderId)!!
+        println("notes: $notes")
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
@@ -59,20 +48,7 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         adapter = NoteAdapter(this, notes)
         noteBoard.adapter = adapter
 
-        // Get reference for add button
-        btnAdd = findViewById(R.id.btnAdd)
-        btnAdd.setOnClickListener {
-            val i = Intent(this, AddEditNoteActivity::class.java)
-            i.putExtra("currFolderId", folderId)
-            i.putExtra("backMain", false)
-            startActivity(i)
-            finish()
-        }
-
-        // Display list if exists
-        if (notes.size > 0){
-            displayList()
-        }
+        displayList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -91,12 +67,7 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null){
-            if (sortBy != ""){
-                notes = db.getSearchNotesInFolders(newText, folderId, sortBy, sortMethod)
-            }
-            else{
-                notes = db.getSearchNotesInFolders(newText, folderId)
-            }
+            notes = db.getSearchNotesInFolders(newText, folderId)
             displayList()
         }
         return true
@@ -109,59 +80,20 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 finish()
                 return true
             }
-            R.id.searchIcon -> {
 
-            }
             R.id.deleteFolder -> {
+                println("we should be here, folder deletion")
                 // Remove only if the id exists
                 notes.forEach {
-                    //db.removeNote(it.id)
-                    db.moveNote(it.id, -1)
+                    db.removeNote(it.id)
                 }
-                db.removeFolder(folderId)
+                //db.removeFolder(folderId)
                 startActivity(Intent(this, MainActivity::class.java))
-                finish()
-                return true
-            }
-            R.id.editFolder -> {
-                val i = Intent(this, AddEditFolderActivity::class.java)
-                //i.putExtra("editNoteId", noteId)
-                i.putExtra("editFolderId", folderId)
-                startActivity(i)
                 finish()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    fun onRadioButtonClicked(view: View) {
-        if (view is MaterialRadioButton) {
-            val checked = view.isChecked
-
-            when (view.getId()) {
-                R.id.sort_az ->
-                    if (checked) {
-                        notes.sortBy { it.title }
-                        sortBy = "title"
-                        sortMethod = "ASC"
-                    }
-                R.id.sort_za ->
-                    if (checked) {
-                        notes.sortByDescending { it.title }
-                        sortBy = "title"
-                        sortMethod = "DESC"
-                    }
-                R.id.sort_date ->
-                    if (checked) {
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        notes.sortByDescending { dateFormat.parse(it.modify_date) }
-                        sortBy = "modify_date"
-                        sortMethod = "DESC"
-                    }
-            }
-            displayList()
-        }
     }
 
     /**

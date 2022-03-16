@@ -35,7 +35,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         setContentView(R.layout.activity_main)
         notes = db.getNotesWithNoFolder()
         folders = db.getAllFolders()
-        println("folder: " + folders)
+        if (!db.existsDeleteFolder()) {
+            db.addDeletedFolder(R.color.grey)
+        }
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
@@ -53,6 +55,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         // Get reference for add button
         btnAddFolder = findViewById(R.id.btnAddFolder)
         btnAddFolder.setOnClickListener {
+            println("add btn clicked")
             startActivity(Intent(this, AddEditFolderActivity::class.java))
             finish()
         }

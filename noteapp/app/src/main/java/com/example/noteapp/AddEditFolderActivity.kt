@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class AddEditFolderActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
-    private var folderId: Int = -1
+    private var folderId: Int = -100
     private val db = DB(this, null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class AddEditFolderActivity : AppCompatActivity() {
 
         // Retrieve the folder if exist
         val i = intent
-        folderId = i.getIntExtra("editFolderId", -1)
+        folderId = i.getIntExtra("editFolderId", -100)
         if (folderId >= 0) {
             val currFolder = db.getFolderById(folderId)
             titleField.setText(currFolder?.title)
@@ -55,10 +55,14 @@ class AddEditFolderActivity : AppCompatActivity() {
             }
 
             R.id.saveChanges -> {
+                println("save changes clicked")
                 if (!db.hasFolder(folderId)) {
+                    println("added folder")
                     db.addFolder(titleField.text.toString(), generateColour())
                     startActivity(Intent(this, MainActivity::class.java))
                 } else {
+                    println("somehow wrong if")
+                    println("id: $folderId")
                     db.editFolder(folderId, titleField.text.toString())
                     val i = Intent(this, ViewFolderActivity::class.java)
                     i.putExtra("goBackFolder", folderId)

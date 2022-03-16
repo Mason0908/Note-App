@@ -97,7 +97,8 @@ class ViewNoteActivity : AppCompatActivity() {
             R.id.deleteNote -> {
                 // Remove only if the id exists
                 if (noteId >= 0){
-                    db.removeNote(noteId)
+                    //db.removeNote(noteId)
+                    db.moveNote(noteId, -1)
                 }
                 if (folderId != null) {
                     val i = Intent(this, ViewFolderActivity::class.java)

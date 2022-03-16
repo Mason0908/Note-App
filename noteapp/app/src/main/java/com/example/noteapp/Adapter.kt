@@ -75,13 +75,20 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
             itemView.setOnClickListener { v ->
                 val i = Intent(v.context, ViewNoteActivity::class.java)
                 val i2 = Intent(v.context, ViewFolderActivity::class.java)
+                val i3 = Intent(v.context, ViewDeletedActivity::class.java)
                 if (allInList[adapterPosition] is Note) {
                     val startIndex = folders.size
                     i.putExtra("displayNoteId", notes[adapterPosition-startIndex].id)
                     v.context.startActivity(i)
                 } else if (allInList[adapterPosition] is Folder) {
-                    i2.putExtra("displayFolderId", folders[adapterPosition].id)
-                    v.context.startActivity(i2)
+                    val f: Folder = allInList[adapterPosition] as Folder
+                    if (f.id == -1) {
+                        println("f.id is -1")
+                        v.context.startActivity(i3)
+                    } else {
+                        i2.putExtra("displayFolderId", folders[adapterPosition].id)
+                        v.context.startActivity(i2)
+                    }
                 }
             }
         }

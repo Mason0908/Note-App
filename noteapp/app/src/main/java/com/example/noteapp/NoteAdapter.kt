@@ -27,10 +27,12 @@ class NoteAdapter internal constructor(context: Context?, notes: MutableList<Not
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = inflater.inflate(R.layout.note_card, parent, false)
+        println("should be constructing a note adapter")
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
+        println("should be constructing a note adapter")
         val title: String = notes[i].title
         val id: Int = notes[i].id
         viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i].color))
@@ -67,6 +69,7 @@ class NoteAdapter internal constructor(context: Context?, notes: MutableList<Not
     }
 
     init {
+        println("should be constructing a note adapter")
         inflater = LayoutInflater.from(context)
         this.notes = notes
     }

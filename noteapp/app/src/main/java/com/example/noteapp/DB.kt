@@ -81,7 +81,29 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val values = ContentValues()
 
+        values.put("id", 2)
         values.put("title", title)
+        values.put("color", color)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("modify_date", dateFormat.format(date))
+
+        val db = this.writableDatabase
+
+        db.insert(TABLE_FOLDERS_NAME, null, values)
+        println("adding folder...")
+
+        db.close()
+    }
+
+    /**
+     * @Description Adding a new folder to the database
+     */
+    fun addDeletedFolder(color: Int){
+
+        val values = ContentValues()
+        values.put("id", -1)
+        values.put("title", "Recently Deleted")
         values.put("color", color)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val date = Date()
@@ -179,6 +201,15 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return allFolders
     }
 
+    fun existsDeleteFolder(): Boolean {
+        val db = this.readableDatabase
+        val recentlyDeleted = "Recently Deleted"
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_FOLDERS_NAME AS folders WHERE folders.id IS -1", null)
+
+        cursor!!.moveToFirst()
+        return cursor.count != 0
+    }
+
     /**
      * @Description Getting a note from database by id
      */
@@ -220,6 +251,16 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             return cursorToFolder(cursor)
         }
         return null
+    }
+
+    fun moveNote(noteId: Int, targetId: Int) {
+        println("noteid: $noteId")
+        println("targetid: $targetId")
+        val db = this.writableDatabase
+        val query = ("UPDATE $TABLE_NOTES_NAME " +
+                "SET folder_id = $targetId " +
+                "WHERE id = $noteId;")
+        db.execSQL(query)
     }
 
     /**
