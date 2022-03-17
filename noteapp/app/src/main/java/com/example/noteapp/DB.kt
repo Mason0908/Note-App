@@ -44,7 +44,10 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-
+        if (p1 < 2){
+            val query = "ALTER TABLE notes ADD delete_date DATETIME;"
+            db.execSQL(query)
+        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -149,6 +152,32 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return allNotes
     }
 
+    fun getDeletedNotes(): MutableList<Note> {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME WHERE delete_date is NOT NULL", null)
+
+        cursor!!.moveToFirst()
+        val allNotes = mutableListOf<Note>()
+        if (cursor.count == 0){
+            return allNotes
+        }
+        var currNote: Note?;
+        currNote = cursorToNote(cursor)
+        if (currNote != null){
+            allNotes.add(currNote)
+        }
+        while (cursor.moveToNext()) {
+            currNote = cursorToNote(cursor)
+            if (currNote != null) {
+                allNotes.add(currNote)
+            }
+        }
+        cursor.close()
+        return allNotes
+    }
+
 
     /**
      * @Description Get all folders from the database
@@ -223,11 +252,25 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
-     * @Description Removing a note the database by id
+     * @Description Removing a note in the database by id
      */
     fun removeNote(id: Int) {
         val db = this.writableDatabase
         db.delete(TABLE_NOTES_NAME, "id=$id", null)
+        db.close()
+    }
+
+    /**
+     * @Description Temporarily removing a note(i.e., moving to recycle bin) by id
+     */
+    fun removeNoteTemporarily(id: Int) {
+        val values = ContentValues()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        values.put("folder_id", -1)
+        values.put("delete_date", dateFormat.format(date))
+        val db = this.writableDatabase
+        db.update(TABLE_NOTES_NAME, values, "id=$id", null)
         db.close()
     }
 
@@ -368,6 +411,30 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
+     * @Description Removing a note from a folder/recycle bin to another folder
+     */
+    fun moveNoteToFolder(noteId: Int, newFolderId: Int) {
+        val values = ContentValues()
+        values.put("folder_id", newFolderId)
+        values.putNull("delete_date")
+        val db = this.writableDatabase
+        db.update(TABLE_NOTES_NAME, values, "id=$noteId", null)
+        db.close()
+    }
+
+    /**
+     * @Description Removing a note from a folder/recycle bin to main board
+     */
+    fun moveNoteToMainBoard(noteId: Int) {
+        val values = ContentValues()
+        values.putNull("folder_id")
+        values.putNull("delete_date")
+        val db = this.writableDatabase
+        db.update(TABLE_NOTES_NAME, values, "id=$noteId", null)
+        db.close()
+    }
+
+    /**
      * @Description Helper function to transform the
      *              current position of cursor to a note object
      */
@@ -451,7 +518,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private const val DATABASE_NAME = "NoteApp"
 
         // below is the variable for database version
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         // below is the variable for notes table name
         const val TABLE_NOTES_NAME = "notes"

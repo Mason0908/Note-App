@@ -7,4 +7,10 @@
         android:title="SearchNote"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/recycleBinIcon"
+        android:icon="@drawable/recycle_bin_icon"
+        android:title="RecycleBin"
+        app:showAsAction="ifRoom" />
 </menu>

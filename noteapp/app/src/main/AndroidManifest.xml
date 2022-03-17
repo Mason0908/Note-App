@@ -13,6 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Noteapp">
         <activity
+            android:name=".MoveNoteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ViewDeletedNoteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RecentlyDeletedActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddEditFolderActivity"
             android:exported="false" />
         <activity
