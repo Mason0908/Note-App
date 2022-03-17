@@ -55,6 +55,10 @@ class AddEditFolderActivity : AppCompatActivity() {
             }
 
             R.id.saveChanges -> {
+                if (titleField.text.toString().isNullOrEmpty()) {
+                    titleField.error = "Folder title cannot be empty"
+                    return true
+                }
                 if (!db.hasFolder(folderId)) {
                     db.addFolder(titleField.text.toString(), generateColour())
                     startActivity(Intent(this, MainActivity::class.java))

@@ -115,7 +115,7 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             R.id.deleteFolder -> {
                 // Remove only if the id exists
                 notes.forEach {
-                    db.removeNote(it.id)
+                    db.removeNoteTemporarily(it.id)
                 }
                 db.removeFolder(folderId)
                 startActivity(Intent(this, MainActivity::class.java))

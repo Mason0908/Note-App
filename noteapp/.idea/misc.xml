@@ -15,19 +15,35 @@
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/lock_icon.xml" value="0.1" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/lock_icon_black.xml" value="0.1" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/move_note_icon.xml" value="0.1875" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/recycle_bin_icon.xml" value="0.1875" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/restore_icon.xml" value="0.1875" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/save_icon.xml" value="0.1875" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/search_icon.xml" value="0.1" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/drawable/unlock_icon.xml" value="0.1" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_add_folder.xml" value="0.15760869565217392" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_addnote.xml" value="0.22333333333333336" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_folders.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_lock_note.xml" value="0.1" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_main.xml" value="0.23210831721470018" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_recently_deleted.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_view_deleted.xml" value="0.3" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_view_deleted_note.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/activity_view_note.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/create_password.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/folder_card.xml" value="0.25" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/folder_list.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/folder_simple_card.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/note.xml" value="1.0575657894736843" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/note_card.xml" value="0.3" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/note_card_locked.xml" value="0.22333333333333336" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/layout/password_window.xml" value="0.1" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/folder_menu.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/main_board_menu.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/recent_delete_menu.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/save_menu.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/search_menu.xml" value="0.17916666666666667" />
+        <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/view_deleted_note_menu.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/view_menu.xml" value="0.25" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/menu/view_menu_unlcok.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/lyui6/cs398_project/noteapp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />

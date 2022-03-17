@@ -85,6 +85,14 @@ class ViewNoteActivity : AppCompatActivity() {
                 finish()
                 return true
             }
+            R.id.moveNote -> {
+                val i = Intent(this, MoveNoteActivity::class.java)
+                i.putExtra("noteToBeMoved", noteId)
+                i.putExtra("isRestore", false)
+                startActivity(i)
+                finish()
+                return true
+            }
             R.id.lockNote -> {
                 val note = db.getNoteById(noteId)!!
                 if (note.isLocked) {
@@ -97,7 +105,7 @@ class ViewNoteActivity : AppCompatActivity() {
             R.id.deleteNote -> {
                 // Remove only if the id exists
                 if (noteId >= 0){
-                    db.removeNote(noteId)
+                    db.removeNoteTemporarily(noteId)
                 }
                 if (folderId != null) {
                     val i = Intent(this, ViewFolderActivity::class.java)

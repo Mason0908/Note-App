@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.search_menu, menu)
+        inflater.inflate(R.menu.main_board_menu, menu)
         val search = menu?.findItem(R.id.searchIcon)
         val searchView = search?.actionView as SearchView
         searchView.isSubmitButtonEnabled = false
@@ -123,6 +123,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         when (item.itemId){
             R.id.searchIcon -> {
 
+            }
+            R.id.recycleBinIcon -> {
+                startActivity(Intent(this, RecentlyDeletedActivity::class.java))
+                finish()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
