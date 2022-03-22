@@ -17,7 +17,13 @@ data class Folder (
     var title: String,
     var color: Int,
     var modify_date: String?
-)
+){
+    override fun equals(other: Any?): Boolean {
+        return (other is Note) && (id == other.id) &&
+                (title == other.title) &&
+                (color == other.color)
+    }
+}
 
 
 fun Folder.toJsonString():String {

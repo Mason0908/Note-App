@@ -231,4 +231,10 @@ class DataSource {
         dataStore.put(note)
 
     }
+
+    fun getAllNotes(): List<Note>{
+        val query = Query(NoteEntryName)
+        val prep = dataStore.prepare(query)
+        return prep.asList(FetchOptions.Builder.withDefaults()).map {it.toNote()}
+    }
 }

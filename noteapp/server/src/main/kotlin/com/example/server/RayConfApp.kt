@@ -229,5 +229,10 @@ fun Application.main() {
                 call.respond(HttpStatusCode.BadRequest, "Missing param")
             }
         }
+        get("getAllNotes"){
+            call.respondText(contentType = ContentType.Application.Json) {
+                dataSource.getAllNotes().toJsonString()
+            }
+        }
     }
 }

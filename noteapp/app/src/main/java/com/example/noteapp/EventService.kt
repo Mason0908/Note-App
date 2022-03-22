@@ -79,6 +79,9 @@ interface EventService {
     @POST("moveToFolder")
     suspend fun moveToFolder(@Query("id") id: Long,
                              @Query("folderId") folderId: Int)
+
+    @GET("getAllNotes")
+    suspend fun getAllNotes(): List<Note>
 }
 
 val Retrofit.eventService: EventService get() = this.create(EventService::class.java)

@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import com.example.common.Note
 import com.example.common.Folder
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 /**
@@ -18,6 +20,11 @@ import com.example.common.Folder
  */
 class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     // below is the method for creating a database by a sqlite query
     override fun onCreate(db: SQLiteDatabase) {
@@ -55,6 +62,153 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.version = oldVersion
+    }
+
+    suspend fun sycn(){
+        val allNotes = eventService.getAllNotes()
+        allNotes.forEach{note ->
+            if (hasNote(note.id.toInt())){
+                val localNote = getNoteById(note.id.toInt())
+                if (localNote != note){
+                    val values = ContentValues()
+                    values.put("title", note.title)
+                    values.put("body", note.body)
+                    values.put("color", note.color)
+                    values.put("tags", note.tags)
+                    values.put("modify_date", note.modify_date)
+                    values.put("locked", note.isLocked)
+                    if (note.folderId != null){
+                        values.put("folder_id", note.folderId)
+                    }
+                    else{
+                        values.putNull("folder_id")
+                    }
+                    if (note.password != null){
+                        values.put("password", note.password)
+                    }
+                    else{
+                        values.putNull("password")
+                    }
+                    if (note.delete_date != null){
+                        values.put("delete_date", note.delete_date)
+                    }
+                    else{
+                        values.putNull("delete_date")
+                    }
+                    val db = this.writableDatabase
+                    db.update(TABLE_NOTES_NAME, values, "id=${note.id.toInt()}", null)
+                    db.close()
+                }
+            }
+            else{
+                val values = ContentValues()
+                values.put("id", note.id.toInt())
+                values.put("title", note.title)
+                values.put("body", note.body)
+                values.put("color", note.color)
+                values.put("tags", note.tags)
+                values.put("modify_date", note.modify_date)
+                values.put("locked", note.isLocked)
+                if (note.folderId != null){
+                    values.put("folder_id", note.folderId)
+                }
+                else{
+                    values.putNull("folder_id")
+                }
+                if (note.password != null){
+                    values.put("password", note.password)
+                }
+                else{
+                    values.putNull("password")
+                }
+                if (note.delete_date != null){
+                    values.put("delete_date", note.delete_date)
+                }
+                else{
+                    values.putNull("delete_date")
+                }
+                val db = this.writableDatabase
+                db.insert(TABLE_NOTES_NAME, null, values)
+                db.close()
+            }
+        }
+
+        val allLocalNotes = getAllNotes()
+        allLocalNotes.forEach { note ->
+            var isInCloud = false
+            allNotes.forEach{cloud ->
+                if(note.id == cloud.id){
+                    isInCloud = true
+                }
+            }
+            if (!isInCloud){
+                removeNote(note.id.toInt())
+            }
+        }
+
+        val allFolders = eventService.getAllFolders()
+        allFolders.forEach { folder ->
+            if (hasFolder(folder.id.toInt())){
+                val localFolder = getFolderById(folder.id.toInt())
+                if (localFolder != folder){
+                    val values = ContentValues()
+                    values.put("title", folder.title)
+                    values.put("color", folder.color)
+                    values.put("modify_date", folder.modify_date)
+                    val db = this.writableDatabase
+                    db.update(TABLE_NOTES_NAME, values, "id=${folder.id.toInt()}", null)
+                    db.close()
+                }
+            }
+            else{
+                val values = ContentValues()
+                values.put("id", folder.id.toInt())
+                values.put("title", folder.title)
+                values.put("color", folder.color)
+                values.put("modify_date", folder.modify_date)
+                val db = this.writableDatabase
+                db.insert(TABLE_FOLDERS_NAME,null, values)
+                db.close()
+            }
+        }
+        val allLocalFolders = getAllFolders()
+        allLocalFolders.forEach { folder ->
+            var isInCloud = false
+            allFolders.forEach{cloud ->
+                if(folder.id == cloud.id){
+                    isInCloud = true
+                }
+            }
+            if (!isInCloud){
+                removeNote(folder.id.toInt())
+            }
+        }
+    }
+
+    fun getAllNotes(): MutableList<Note> {
+
+        val db = this.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME", null)
+
+        cursor!!.moveToFirst()
+        val allNotes = mutableListOf<Note>()
+        if (cursor.count == 0){
+            return allNotes
+        }
+        var currNote: Note?;
+        currNote = cursorToNote(cursor)
+        if (currNote != null){
+            allNotes.add(currNote)
+        }
+        while (cursor.moveToNext()) {
+            currNote = cursorToNote(cursor)
+            if (currNote != null) {
+                allNotes.add(currNote)
+            }
+        }
+        cursor.close()
+        return allNotes
     }
 
     /**
@@ -102,7 +256,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     fun getLatestNote(): Note? {
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME ORDER BY modify_date DESC LIMIT 1", null)
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME ORDER BY id DESC LIMIT 1", null)
         cursor!!.moveToFirst()
         if (cursor.count == 0){
             return null
@@ -114,7 +268,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getLatestFolder(): Folder? {
         val db = this.readableDatabase
 
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_FOLDERS_NAME ORDER BY modify_date DESC LIMIT 1", null)
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_FOLDERS_NAME ORDER BY id DESC LIMIT 1", null)
         cursor!!.moveToFirst()
         if (cursor.count == 0){
             return null
@@ -448,6 +602,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             cursor!!.getString(cursor.getColumnIndex("tags")),
             cursor!!.getString(cursor.getColumnIndex("modify_date"))
         )
+        if (note.folderId == 0){
+            note.folderId = null
+        }
         return note
     }
 

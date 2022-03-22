@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/syncIcon"
+        android:icon="@drawable/sync_icon"
+        android:title="SyncDatabase"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/searchIcon"
         android:icon="@drawable/search_icon"
         android:title="SearchNote"

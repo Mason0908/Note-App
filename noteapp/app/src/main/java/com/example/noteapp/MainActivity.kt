@@ -44,17 +44,12 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create(EventService::class.java)
+    private val mainActivity = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         notes = db.getNotesWithNoFolder()
-
-//        var testNotes = listOf<Note>()
-//        GlobalScope.launch {
-//            testNotes = eventService.getNotesWithNoFolder()
-//            notes = testNotes.toMutableList()
-//        }
 
         folders = db.getAllFolders()
 
@@ -150,6 +145,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 finish()
                 return true
             }
+            R.id.syncIcon -> {
+                GlobalScope.launch {
+                    db.sycn()
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -193,9 +193,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
      */
     private fun displayList() {
         noteBoard.layoutManager = LinearLayoutManager(this)
-        val adapter = Adapter(this, notes, folders)
+        val adapter = Adapter(mainActivity, notes, folders)
         noteBoard.adapter = adapter
     }
-
 
 }

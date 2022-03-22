@@ -48,18 +48,14 @@ data class Note (
     var tags: String?,
     var modify_date: String? = null,
     var delete_date: String? = null
-)
+){
+    override fun equals(other: Any?): Boolean {
+        return (other is Note) && (id == other.id) && (folderId == other.folderId) &&
+                (title == other.title) && (body == other.body) && (isLocked == other.isLocked) &&
+                (password == other.password) && (color == other.color) && (tags == other.tags)
+    }
+}
 
-//fun Note.toJsonString(): String {
-//    val gson = Gson()
-//    return gson.toJson(this)
-//}
-//
-//fun List<Note>.toJsonString(): String{
-//    val gson = Gson()
-//    return gson.toJson(this)
-//}
-//
 fun Note.toJsonString():String {
     return Json.encodeToString(this)
 }
@@ -67,3 +63,4 @@ fun Note.toJsonString():String {
 fun List<Note>.toJsonString(): String{
     return Json.encodeToString(this)
 }
+
