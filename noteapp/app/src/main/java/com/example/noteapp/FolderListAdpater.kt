@@ -92,7 +92,7 @@ class FolderListAdapter internal constructor(context: Context?, folders: Mutable
                 } else {
                     db.moveNoteToFolder(noteToBeMoved, folders[adapterPosition].id.toInt())
                     GlobalScope.launch {
-                        eventService.moveToFolder(noteToBeMoved.toLong(), folders[adapterPosition-1].id.toInt())
+                        eventService.moveToFolder(noteToBeMoved.toLong(), folders[adapterPosition].id.toInt())
                     }
                     val i = Intent(v.context, MainActivity::class.java)
                     v.context.startActivity(i)

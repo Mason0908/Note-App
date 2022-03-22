@@ -82,6 +82,7 @@ class DataSource {
         note.setProperty("color", color)
         note.setProperty("tags", tags)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Los_Angeles")
         val date = Date()
         note.setProperty("modify_date", dateFormat.format(date))
         note.setProperty("delete_date", when(note.getProperty("delete_date")){
@@ -97,6 +98,7 @@ class DataSource {
         folder.setProperty("title", title)
         folder.setProperty("color", color)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Los_Angeles")
         val date = Date()
         folder.setProperty("modify_date", dateFormat.format(date))
         dataStore.put(folder)
@@ -144,6 +146,7 @@ class DataSource {
         val curr = getNoteById(id)
         val note = curr.toEntity()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Los_Angeles")
         val date = Date()
         note.setProperty("delete_date", dateFormat.format(date))
         note.setProperty("folderId", -1)
