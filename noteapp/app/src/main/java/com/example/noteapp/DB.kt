@@ -156,7 +156,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     values.put("color", folder.color)
                     values.put("modify_date", folder.modify_date)
                     val db = this.writableDatabase
-                    db.update(TABLE_NOTES_NAME, values, "id=${folder.id.toInt()}", null)
+                    db.update(TABLE_FOLDERS_NAME, values, "id=${folder.id.toInt()}", null)
                     db.close()
                 }
             }
