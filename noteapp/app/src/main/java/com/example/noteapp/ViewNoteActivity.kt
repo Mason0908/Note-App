@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.internal.ViewUtils.getContentView
 import java.io.File
 import java.io.FileOutputStream
+import java.util.jar.Pack200
 
 class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
@@ -147,44 +148,59 @@ class ViewNoteActivity : AppCompatActivity() {
                 val arr = Array<String>(1){Manifest.permission.WRITE_EXTERNAL_STORAGE}
                 ActivityCompat.requestPermissions(this,
                     arr, PackageManager.PERMISSION_GRANTED)
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    // region draw context to pdf document
+                    var generatePDF = PdfDocument()
+                    var pageInfo = PdfDocument.PageInfo.Builder(1200, 2010, 1).create()
+                    var page = generatePDF.startPage(pageInfo)
+                    var canvas = page.canvas
 
-                // region draw context to pdf document
-                var generatePDF = PdfDocument()
-                var pageInfo = PdfDocument.PageInfo.Builder(1200, 2010, 1).create()
-                var page = generatePDF.startPage(pageInfo)
-                var canvas = page.canvas
+                    var titlePaint = Paint()
+                    titlePaint.textAlign = Paint.Align.CENTER
+                    titlePaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
+                    titlePaint.textSize = 70F
+                    canvas.drawText(
+                        "${db.getNoteById(noteId)?.title}",
+                        (pageWidth / 2).toFloat(), 270.0F, titlePaint
+                    )
 
-                var titlePaint = Paint()
-                titlePaint.textAlign = Paint.Align.CENTER
-                titlePaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
-                titlePaint.textSize = 70F
-                canvas.drawText("${db.getNoteById(noteId)?.title}",
-                    (pageWidth/2).toFloat(), 270.0F, titlePaint)
-
-                var bodyPaint = TextPaint()
-                bodyPaint.textAlign = Paint.Align.LEFT
-                bodyPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
-                bodyPaint.textSize = 70F
+                    var bodyPaint = TextPaint()
+                    bodyPaint.textAlign = Paint.Align.LEFT
+                    bodyPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+                    bodyPaint.textSize = 70F
 //                canvas.drawText("${db.getNoteById(noteId)?.body}",
 //                    30.0F, 400.0F, bodyPaint)
-                var bodyStaticLayout = StaticLayout("${db.getNoteById(noteId)?.body}", bodyPaint, canvas.width,
-                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
-                canvas.save()
-                canvas.translate(30.0f, 400.0f)
-                bodyStaticLayout.draw(canvas)
-                canvas.restore()
-                generatePDF.finishPage(page)
+                    var bodyStaticLayout = StaticLayout(
+                        "${db.getNoteById(noteId)?.body}", bodyPaint, canvas.width,
+                        Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false
+                    )
+                    canvas.save()
+                    canvas.translate(30.0f, 400.0f)
+                    bodyStaticLayout.draw(canvas)
+                    canvas.restore()
 
-                // endregion
+                    generatePDF.finishPage(page)
+                    // endregion
 
-                // region write pdf file to the phone external storage
-                val file = File(getExternalFilesDir(null), "/Note$noteId.pdf")
-                generatePDF.writeTo(FileOutputStream(file))
-                // endregion
+                    // region write pdf file to the phone external storage
+                    val file = File(getExternalFilesDir(null), "/Note$noteId.pdf")
+                    generatePDF.writeTo(FileOutputStream(file))
+                    // endregion
 
-                Toast.makeText(this, "File exports to ${getExternalFilesDir(null).toString()}/Note$noteId.pdf", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        "File exports to ${getExternalFilesDir(null).toString()}/Note$noteId.pdf",
+                        Toast.LENGTH_LONG
+                    ).show()
 
-                generatePDF.close()
+                    generatePDF.close()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Permission denied",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
