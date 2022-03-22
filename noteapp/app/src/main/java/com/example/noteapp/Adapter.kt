@@ -15,6 +15,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import kotlin.random.Random
+import com.example.common.Note
+import com.example.common.Folder
 
 /**
  * @Description Adapter for Recycle View
@@ -36,7 +38,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
         if (allInList[i] is Note) {
             val startIndex = folders.size
             val title: String = notes[i-startIndex].title
-            val id: Int = notes[i-startIndex].id
+            val id: Long = notes[i-startIndex].id
             viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i-startIndex].color))
             viewHolder.nTitle.text = title
             viewHolder.nID.text = java.lang.String.valueOf(id)
@@ -46,11 +48,10 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
             viewHolder.imageFolder.isVisible = false
         } else if (allInList[i] is Folder) {
             val title: String = folders[i].title
-            val id: Int = folders[i].id
+            val id: Int = folders[i].id.toInt()
             viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, folders[i].color))
             viewHolder.nTitle.text = title
             viewHolder.nID.text = java.lang.String.valueOf(id)
-            println("modi date: " + folders[i].modify_date)
             viewHolder.nDate.text = folders[i].modify_date
             viewHolder.lock.isVisible = false
             viewHolder.imageNote.isVisible = false
@@ -77,10 +78,10 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
                 val i2 = Intent(v.context, ViewFolderActivity::class.java)
                 if (allInList[adapterPosition] is Note) {
                     val startIndex = folders.size
-                    i.putExtra("displayNoteId", notes[adapterPosition-startIndex].id)
+                    i.putExtra("displayNoteId", notes[adapterPosition-startIndex].id.toInt())
                     v.context.startActivity(i)
                 } else if (allInList[adapterPosition] is Folder) {
-                    i2.putExtra("displayFolderId", folders[adapterPosition].id)
+                    i2.putExtra("displayFolderId", folders[adapterPosition].id.toInt())
                     v.context.startActivity(i2)
                 }
             }

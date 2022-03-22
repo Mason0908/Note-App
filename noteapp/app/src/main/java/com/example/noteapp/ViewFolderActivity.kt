@@ -13,6 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import java.text.SimpleDateFormat
+import com.example.common.Note
+import com.example.common.Folder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var noteBoard: RecyclerView
@@ -23,6 +29,11 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private var folderId: Int = -1
     private lateinit var adapter: NoteAdapter
     private val db = DB(this, null)
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,9 +126,17 @@ class ViewFolderActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             R.id.deleteFolder -> {
                 // Remove only if the id exists
                 notes.forEach {
-                    db.removeNoteTemporarily(it.id)
+                    db.removeNoteTemporarily(it.id.toInt())
+                }
+                GlobalScope.launch {
+                    notes.forEach {
+                        eventService.removeNoteTemporarily(it.id)
+                    }
                 }
                 db.removeFolder(folderId)
+                GlobalScope.launch {
+                    eventService.removeFolder(folderId.toLong())
+                }
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
                 return true

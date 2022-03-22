@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.common.Note
+import com.example.common.Folder
+
 
 /**
  * @Description class for handling all database queries
@@ -97,33 +100,27 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.close()
     }
 
-    /**
-     * @Description Get all notes from the database
-     */
-    fun getAllNotes(sortBy: String = "modify_date", sortMethod: String = "DESC"): MutableList<Note> {
+    fun getLatestNote(): Note? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME ORDER BY modify_date DESC LIMIT 1", null)
+        cursor!!.moveToFirst()
+        if (cursor.count == 0){
+            return null
+        }
+        val currNote = cursorToNote(cursor)
+        return currNote
+    }
 
+    fun getLatestFolder(): Folder? {
         val db = this.readableDatabase
 
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_NOTES_NAME ORDER BY $sortBy $sortMethod", null)
-
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_FOLDERS_NAME ORDER BY modify_date DESC LIMIT 1", null)
         cursor!!.moveToFirst()
-        val allNotes = mutableListOf<Note>()
         if (cursor.count == 0){
-            return allNotes
+            return null
         }
-        var currNote: Note?;
-        currNote = cursorToNote(cursor)
-        if (currNote != null){
-            allNotes.add(currNote)
-        }
-        while (cursor.moveToNext()) {
-            currNote = cursorToNote(cursor)
-            if (currNote != null) {
-                allNotes.add(currNote)
-            }
-        }
-        cursor.close()
-        return allNotes
+        val currFolder: Folder? = cursorToFolder(cursor)
+        return currFolder
     }
 
     fun getNotesWithNoFolder(sortBy: String = "modify_date", sortMethod: String = "DESC"): MutableList<Note> {
@@ -441,7 +438,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
 
     fun cursorToNote(cursor: Cursor?): Note? {
-        val note = Note(cursor!!.getInt(cursor.getColumnIndex("id")),
+        val note = Note(cursor!!.getInt(cursor.getColumnIndex("id")).toLong(),
             cursor!!.getInt(cursor.getColumnIndex("folder_id")),
             cursor!!.getString(cursor.getColumnIndex("title")),
             cursor!!.getString(cursor.getColumnIndex("body")),
@@ -500,8 +497,8 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
     @SuppressLint("Range")
     fun cursorToFolder(cursor: Cursor?): Folder? {
-        val id = cursor!!.getInt(cursor.getColumnIndex("id"))
-        val notes = getAllFolderNotes(id) // list of note IDs
+        val id = cursor!!.getInt(cursor.getColumnIndex("id")).toLong()
+        val notes = getAllFolderNotes(id.toInt()) // list of note IDs
 
         val folder = Folder(id, notes!!,
             cursor!!.getString(cursor.getColumnIndex("title")),

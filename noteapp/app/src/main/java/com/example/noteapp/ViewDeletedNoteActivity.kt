@@ -14,11 +14,20 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ViewDeletedNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
     private var noteId: Int = -1
     private val db = DB(this, null)
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +85,9 @@ class ViewDeletedNoteActivity : AppCompatActivity() {
         dialog.setOnShowListener {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
                 db.removeNote(noteId)
+                GlobalScope.launch {
+                    eventService.removeNote(noteId.toLong())
+                }
                 dialog.dismiss()
                 startActivity(Intent(this, RecentlyDeletedActivity::class.java))
                 finish()

@@ -17,6 +17,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.Note
+import com.example.common.Folder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: TextView
@@ -26,6 +32,11 @@ class ViewNoteActivity : AppCompatActivity() {
     private lateinit var tagBoard: RecyclerView
     private var tags: String = ""
     private lateinit var adapter: TagAdapterForView
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +117,9 @@ class ViewNoteActivity : AppCompatActivity() {
                 // Remove only if the id exists
                 if (noteId >= 0){
                     db.removeNoteTemporarily(noteId)
+                    GlobalScope.launch {
+                        eventService.removeNoteTemporarily(noteId.toLong())
+                    }
                 }
                 if (folderId != null) {
                     val i = Intent(this, ViewFolderActivity::class.java)
@@ -150,7 +164,10 @@ class ViewNoteActivity : AppCompatActivity() {
                 showPasswordWindow(note, true)
             }
             dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
-                db.unlockNote(note.id)
+                db.unlockNote(note.id.toInt())
+                GlobalScope.launch {
+                    eventService.unlockNote(note.id)
+                }
                 Toast.makeText(this, "Password removed!", Toast.LENGTH_SHORT).show()
                 dialog.cancel()
             }
@@ -186,7 +203,10 @@ class ViewNoteActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(this, "Password created!", Toast.LENGTH_SHORT).show()
                     }
-                    db.lockNote(note.id, input.text.toString())
+                    db.lockNote(note.id.toInt(), input.text.toString())
+                    GlobalScope.launch {
+                        eventService.lockNote(note.id, input.text.toString())
+                    }
                     dialog.dismiss()
                 }
             }

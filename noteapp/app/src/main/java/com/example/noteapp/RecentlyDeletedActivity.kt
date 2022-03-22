@@ -10,12 +10,23 @@ import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.Note
+import com.example.common.Folder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class RecentlyDeletedActivity : AppCompatActivity() {
     private lateinit var noteBoard: RecyclerView
     private lateinit var notes: MutableList<Note>
     private lateinit var adapter: DeletedNoteAdapter
     private val db = DB(this, null)
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +87,12 @@ class RecentlyDeletedActivity : AppCompatActivity() {
         dialog.setOnShowListener {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
                 notes.forEach {
-                    db.removeNote(it.id)
+                    db.removeNote(it.id.toInt())
+                }
+                GlobalScope.launch {
+                    notes.forEach {
+                        eventService.removeNote(it.id)
+                    }
                 }
                 notes = db.getDeletedNotes()
                 dialog.dismiss()

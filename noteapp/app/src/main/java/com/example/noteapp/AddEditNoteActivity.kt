@@ -12,6 +12,14 @@ import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+//import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+//import kotlinx.serialization.json.Json
+import okhttp3.MediaType
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+
 
 /**
  * @Description Add/Edit note screen
@@ -27,6 +35,12 @@ class AddEditNoteActivity : AppCompatActivity() {
     var tags: String = ""
     private lateinit var tagBoard: RecyclerView
     private lateinit var adapter: TagAdapterForEdit
+
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,9 +149,22 @@ class AddEditNoteActivity : AppCompatActivity() {
             }
             R.id.saveChanges -> {
                 if (!db.hasNote(noteId)) {
-                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags, folderId)
+                    val color = generateColour()
+                    db.addNote(titleField.text.toString(), bodyField.text.toString(), color, tags, folderId)
+                    val id = db.getLatestNote()?.id
+                    GlobalScope.launch {
+                        eventService.addNote(id ?: 0, titleField.text.toString(), bodyField.text.toString(), color, tags, folderId)
+                    }
                 } else {
+                    val color = db.getNoteById(noteId)?.color
+                    val currFolderId = when(db.getNoteById(noteId)?.folderId){
+                        0 -> null
+                        else -> db.getNoteById(noteId)?.folderId
+                    }
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
+                    GlobalScope.launch {
+                        eventService.addNote(noteId.toLong(), titleField.text.toString(), bodyField.text.toString(), color ?: generateColour(), tags, currFolderId)
+                    }
                 }
                 if (backMain) {
                     startActivity(Intent(this, MainActivity::class.java))

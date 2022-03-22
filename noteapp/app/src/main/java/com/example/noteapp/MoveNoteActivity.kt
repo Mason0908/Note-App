@@ -7,6 +7,8 @@ import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.Note
+import com.example.common.Folder
 
 class MoveNoteActivity : AppCompatActivity() {
     private lateinit var folderList: RecyclerView
@@ -39,7 +41,7 @@ class MoveNoteActivity : AppCompatActivity() {
             val noteFolderId: Int? = db.getFolderIdOfNote(noteId)
             if (noteFolderId!! >= 0) {
                 folders.removeIf { folder ->
-                    folder.id == noteFolderId
+                    folder.id.toInt() == noteFolderId
                 }
             }
         } else {

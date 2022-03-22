@@ -14,6 +14,13 @@ import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+//import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+//import kotlinx.serialization.json.Json
+import okhttp3.MediaType
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * @Description Add/Edit folder screen
@@ -23,6 +30,11 @@ class AddEditFolderActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
     private var folderId: Int = -1
     private val db = DB(this, null)
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +72,19 @@ class AddEditFolderActivity : AppCompatActivity() {
                     return true
                 }
                 if (!db.hasFolder(folderId)) {
-                    db.addFolder(titleField.text.toString(), generateColour())
+                    val color = generateColour()
+                    db.addFolder(titleField.text.toString(), color)
+                    val id = db.getLatestFolder()?.id
+                    GlobalScope.launch {
+                        eventService.addFolder(id ?: 0, titleField.text.toString(), color)
+                    }
                     startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     db.editFolder(folderId, titleField.text.toString())
+                    val color = db.getFolderById(folderId)?.color
+                    GlobalScope.launch {
+                        eventService.addFolder(folderId.toLong(), titleField.text.toString(), color ?: generateColour())
+                    }
                     val i = Intent(this, ViewFolderActivity::class.java)
                     i.putExtra("goBackFolder", folderId)
                     startActivity(i)

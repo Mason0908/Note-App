@@ -15,6 +15,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import kotlin.random.Random
+import com.example.common.Note
+import com.example.common.Folder
 
 /**
  * @Description Adapter for Recycle View
@@ -32,7 +34,7 @@ class NoteAdapter internal constructor(context: Context?, notes: MutableList<Not
 
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         val title: String = notes[i].title
-        val id: Int = notes[i].id
+        val id: Int = notes[i].id.toInt()
         viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i].color))
         viewHolder.nTitle.text = title
         viewHolder.nID.text = java.lang.String.valueOf(id)
@@ -59,7 +61,7 @@ class NoteAdapter internal constructor(context: Context?, notes: MutableList<Not
             itemView.setOnClickListener { v ->
                 val db = DB(v.context, null)
                 val i = Intent(v.context, ViewNoteActivity::class.java)
-                i.putExtra("displayNoteId", notes[adapterPosition].id)
+                i.putExtra("displayNoteId", notes[adapterPosition].id.toInt())
                 //i.putExtra("displayNoteFolderId", db.getFolderIdOfNote(notes[adapterPosition].id))
                 v.context.startActivity(i)
             }

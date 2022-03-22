@@ -15,6 +15,12 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import kotlin.random.Random
+import com.example.common.Note
+import com.example.common.Folder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * @Description Adapter for Recycle View
@@ -26,6 +32,11 @@ class FolderListAdapter internal constructor(context: Context?, folders: Mutable
     private val folders: List<Folder>
     private val noteToBeMoved: Int = noteToBeMoved
     private val hasMainBoard: Boolean = hasMainBoard
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -67,13 +78,22 @@ class FolderListAdapter internal constructor(context: Context?, folders: Mutable
                 if (hasMainBoard) {
                     if (adapterPosition == 0) {
                         db.moveNoteToMainBoard(noteToBeMoved)
+                        GlobalScope.launch {
+                            eventService.moveToMain(noteToBeMoved.toLong())
+                        }
                     } else {
-                        db.moveNoteToFolder(noteToBeMoved, folders[adapterPosition-1].id)
+                        db.moveNoteToFolder(noteToBeMoved, folders[adapterPosition-1].id.toInt())
+                        GlobalScope.launch {
+                            eventService.moveToFolder(noteToBeMoved.toLong(), folders[adapterPosition-1].id.toInt())
+                        }
                     }
                     val i = Intent(v.context, MainActivity::class.java)
                     v.context.startActivity(i)
                 } else {
-                    db.moveNoteToFolder(noteToBeMoved, folders[adapterPosition].id)
+                    db.moveNoteToFolder(noteToBeMoved, folders[adapterPosition].id.toInt())
+                    GlobalScope.launch {
+                        eventService.moveToFolder(noteToBeMoved.toLong(), folders[adapterPosition-1].id.toInt())
+                    }
                     val i = Intent(v.context, MainActivity::class.java)
                     v.context.startActivity(i)
                 }

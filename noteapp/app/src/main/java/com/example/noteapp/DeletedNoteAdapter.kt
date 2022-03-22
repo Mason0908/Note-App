@@ -11,6 +11,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.Note
+import com.example.common.Folder
 
 class DeletedNoteAdapter internal constructor(context: Context?, notes: MutableList<Note>):
     RecyclerView.Adapter<DeletedNoteAdapter.ViewHolder?>() {
@@ -24,7 +26,7 @@ class DeletedNoteAdapter internal constructor(context: Context?, notes: MutableL
 
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         val title: String = notes[i].title
-        val id: Int = notes[i].id
+        val id: Int = notes[i].id.toInt()
         viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i].color))
         viewHolder.nTitle.text = title
         viewHolder.nID.text = java.lang.String.valueOf(id)
@@ -50,7 +52,7 @@ class DeletedNoteAdapter internal constructor(context: Context?, notes: MutableL
         init {
             itemView.setOnClickListener { v ->
                 val i = Intent(v.context, ViewDeletedNoteActivity::class.java)
-                i.putExtra("deletedNoteId", notes[adapterPosition].id)
+                i.putExtra("deletedNoteId", notes[adapterPosition].id.toInt())
                 //i.putExtra("displayNoteFolderId", db.getFolderIdOfNote(notes[adapterPosition].id))
                 v.context.startActivity(i)
             }

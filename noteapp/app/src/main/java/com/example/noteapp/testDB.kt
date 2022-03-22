@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.common.Note
+import com.example.common.Folder
 
 /**
  * @Description - this is a copy of DB
@@ -374,7 +376,7 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
 
     fun cursorToNote(cursor: Cursor?): Note? {
-        val note = Note(cursor!!.getInt(cursor.getColumnIndex("id")),
+        val note = Note(cursor!!.getInt(cursor.getColumnIndex("id")).toLong(),
             cursor!!.getInt(cursor.getColumnIndex("folder_id")),
             cursor!!.getString(cursor.getColumnIndex("title")),
             cursor!!.getString(cursor.getColumnIndex("body")),
@@ -433,8 +435,8 @@ class testDB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
      */
     @SuppressLint("Range")
     fun cursorToFolder(cursor: Cursor?): Folder? {
-        val id = cursor!!.getInt(cursor.getColumnIndex("id"))
-        val notes = getAllFolderNotes(id) // list of note IDs
+        val id = cursor!!.getInt(cursor.getColumnIndex("id")).toLong()
+        val notes = getAllFolderNotes(id.toInt()) // list of note IDs
 
         val folder = Folder(id, notes!!,
             cursor!!.getString(cursor.getColumnIndex("title")),
