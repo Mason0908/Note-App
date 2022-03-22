@@ -148,6 +148,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             R.id.syncIcon -> {
                 GlobalScope.launch {
                     db.sycn()
+                    runOnUiThread {
+                        notes = db.getNotesWithNoFolder()
+                        displayList()
+                    }
                 }
             }
         }
