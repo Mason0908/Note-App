@@ -12,6 +12,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.text.InputType
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.Menu
@@ -158,17 +161,28 @@ class ViewNoteActivity : AppCompatActivity() {
                 canvas.drawText("${db.getNoteById(noteId)?.title}",
                     (pageWidth/2).toFloat(), 270.0F, titlePaint)
 
+                var bodyPaint = TextPaint()
+                bodyPaint.textAlign = Paint.Align.LEFT
+                bodyPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+                bodyPaint.textSize = 70F
+//                canvas.drawText("${db.getNoteById(noteId)?.body}",
+//                    30.0F, 400.0F, bodyPaint)
+                var bodyStaticLayout = StaticLayout("${db.getNoteById(noteId)?.body}", bodyPaint, canvas.width,
+                    Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                canvas.save()
+                canvas.translate(30.0f, 400.0f)
+                bodyStaticLayout.draw(canvas)
+                canvas.restore()
                 generatePDF.finishPage(page)
 
                 // endregion
 
                 // region write pdf file to the phone external storage
                 val file = File(getExternalFilesDir(null), "/Note$noteId.pdf")
-                println("Print the file output dir - ${getExternalFilesDir(null).toString()}" + "/Note$noteId.pdf")
                 generatePDF.writeTo(FileOutputStream(file))
                 // endregion
 
-                Toast.makeText(this, "PDF generated", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "File exports to ${getExternalFilesDir(null).toString()}/Note$noteId.pdf", Toast.LENGTH_LONG).show()
 
                 generatePDF.close()
             }
