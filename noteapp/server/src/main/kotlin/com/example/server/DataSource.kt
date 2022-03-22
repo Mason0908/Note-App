@@ -1,7 +1,6 @@
 package com.example.server
 
 
-import com.example.common.AgendaEntry
 import com.google.appengine.api.datastore.*
 import com.example.common.Note
 import com.example.common.Folder
