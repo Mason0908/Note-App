@@ -1,5 +1,7 @@
 package com.example.noteapp
 
+import com.example.common.Folder
+import com.example.common.Note
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -18,7 +20,8 @@ internal class FolderNoteTest {
     fun add_notes() {
         assertEquals(0, noteBoard.size)
         for (i in 0 .. 49) {
-            noteBoard.add(Note(i, null, "$i",
+            noteBoard.add(Note(
+                i.toLong(), null, "$i",
                 "body $i", false, null, 1, null, null))
         }
         assertEquals(50, noteBoard.size)
@@ -32,7 +35,7 @@ internal class FolderNoteTest {
     fun add_folders() {
         assertEquals(0, folders.size)
         for (i in 0 .. 49) {
-            folders.add( Folder(i, listOf(), "${i+1}", 1, null))
+            folders.add( Folder(i.toLong(), listOf(), "${i+1}", 1, null))
         }
         assertEquals(50, folders.size)
         for (i in 0 .. 49) {
@@ -46,13 +49,14 @@ internal class FolderNoteTest {
         assertEquals(0, noteBoard.size)
         var listOfID = mutableListOf<Int>()
         for (i in 0 .. 49) {
-            noteBoard.add(Note(i, null, "$i",
+            noteBoard.add(Note(
+                i.toLong(), null, "$i",
                 "body $i", false, null, 1, null, null))
             listOfID.add(i)
         }
         assertEquals(50, noteBoard.size)
         val folder = Folder(0,  listOfID, "f1", 1, null)
-        assertEquals(50, folder.notesId.size)
+        folder.notesId?.let { assertEquals(50, it.size) }
         for (i in 0 .. 49) {
             noteBoard.removeAt(0)
         }
