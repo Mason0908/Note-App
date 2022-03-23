@@ -3,6 +3,7 @@ package com.example.noteapp
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
@@ -15,15 +16,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.tiagohm.markdownview.MarkdownView
+import br.tiagohm.markdownview.css.InternalStyleSheet
+import br.tiagohm.markdownview.css.styles.Github
+
 
 class ViewNoteActivity : AppCompatActivity() {
-    private lateinit var noteDisplay: TextView
+    private lateinit var noteDisplay: MarkdownView
     private var noteId: Int = -1
     private var folderId: Int? = null
     private val db = DB(this, null)
     private lateinit var tagBoard: RecyclerView
+    private lateinit var wordCount: TextView
+
     private var tags: String = ""
     private lateinit var adapter: TagAdapterForView
 
@@ -32,6 +40,7 @@ class ViewNoteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_view_note)
 
         noteDisplay = findViewById(R.id.noteDisplay)
+        wordCount = findViewById(R.id.wordCount)
 
         // the action bar with current note title and delete
         val actionBar: Toolbar = findViewById(R.id.toolbar)
@@ -47,7 +56,34 @@ class ViewNoteActivity : AppCompatActivity() {
                 showLockedNoteAlert(currNote)
             } else {
                 supportActionBar!!.title = currNote.title
-                noteDisplay.text = currNote.body
+                //noteDisplay.addStyleSheet(Github())
+                val css: InternalStyleSheet = cssStyleSheet(currNote.color_heading, currNote.color_body, currNote.font)
+                noteDisplay.addStyleSheet(css)
+                val body: String? = currNote?.body
+                val words: String? = body?.trim()
+                val lines: List<String>? = body?.lines()
+                val frequencyMap: MutableMap<String, Int> = HashMap()
+                for (s in lines!!) {
+                    var count = frequencyMap[s]
+                    if (count == null) count = 0
+                    frequencyMap[s] = count + 1
+                }
+                var linesToRemove: Int = 0;
+                if (frequencyMap.containsKey("")) {
+                    linesToRemove = frequencyMap[""]!!
+                }
+                if (body.length == 0) {
+                    wordCount.setText("     Number of words: 0     Number of lines: 0")
+                } else {
+                wordCount.setText(
+                        "     Number of words: " + words?.split("\\s+".toRegex())?.size +
+                        "     Number of lines: " + (body?.lines()?.size!! - linesToRemove))
+
+                noteDisplay.loadMarkdown(currNote.body)
+
+
+                //noteDisplay.text = currNote.body
+                }
             }
             tags = db.getTags(noteId)
             if (db.noteHasFolder(noteId)) {
@@ -73,6 +109,11 @@ class ViewNoteActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
+            R.id.settings -> {
+                val i = Intent(this, ViewSettingsActivity::class.java)
+                i.putExtra("editNoteId", noteId)
+                startActivity(i)
+            }
             android.R.id.home -> {
                 if (folderId != null) {
                     val i = Intent(this, ViewFolderActivity::class.java)
@@ -110,6 +151,12 @@ class ViewNoteActivity : AppCompatActivity() {
                 return true
             }
             R.id.editNote -> {
+                val markdownView: MarkdownView = findViewById(R.id.noteDisplay)
+                markdownView.addStyleSheet(Github())
+                markdownView.loadMarkdown("**MarkdownView**")
+                val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.jacksimba)
+                //markdownView.setTypeface(typeface)
+                println("editing note")
                 val i = Intent(this, AddEditNoteActivity::class.java)
                 i.putExtra("editNoteId", noteId)
                 //i.putExtra("editFolderId", folderId)
@@ -219,7 +266,8 @@ class ViewNoteActivity : AppCompatActivity() {
                 setSupportActionBar(actionBar)
                 supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                 supportActionBar!!.title = note.title
-                noteDisplay.text = note.body
+                noteDisplay.loadMarkdown(note.body)
+                //noteDisplay.text = note.body
                 Toast.makeText(this, "Note unlocked!", Toast.LENGTH_SHORT).show()
             }
         }
@@ -230,5 +278,17 @@ class ViewNoteActivity : AppCompatActivity() {
         tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         adapter = TagAdapterForView(this, tags)
         tagBoard.adapter = adapter
+    }
+
+    private fun cssStyleSheet(colorHeading: String?, colorBody: String?, font: String?): InternalStyleSheet {
+        val css: InternalStyleSheet = Github()
+        //css.addFontFace("MyFont", "condensed", "italic", "bold", "url('myfont.ttf')")
+        //css.addMedia("screen and (min-width: 1281px)")
+        //css.addRule("h1", "color: blue")
+        println("should change color")
+        //css.endMedia()
+        css.addRule("h1", "color: $colorHeading", "font-family: $font")
+        css.addRule("*", "color: $colorBody", "font-family: $font")
+        return css
     }
 }

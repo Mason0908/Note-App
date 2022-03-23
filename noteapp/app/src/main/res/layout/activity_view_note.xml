@@ -9,37 +9,49 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/teal_200"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/teal_200"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tagBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <TextView
+    <br.tiagohm.markdownview.MarkdownView
         android:id="@+id/noteDisplay"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="471dp"
+        android:layout_height="560dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
         android:fadeScrollbars="true"
+        android:fontFamily="@font/bigheroes"
         android:scrollbars="vertical"
         android:text="Sample Text Description"
         android:textAlignment="viewStart"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
+        app:escapeHtml="false"
+        app:layout_constraintBottom_toTopOf="@+id/wordCount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tagBoard" />
+        app:layout_constraintTop_toBottomOf="@+id/tagBoard"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/wordCount"
+        android:layout_width="385dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

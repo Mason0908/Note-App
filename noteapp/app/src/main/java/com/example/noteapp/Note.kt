@@ -12,5 +12,8 @@ data class Note (
     var password: String?,
     var color: Int,
     var tags: String?,
-    var modify_date: String? = null
+    var modify_date: String? = null,
+    var color_heading: String? = null,
+    var color_body: String? = null,
+    var font: String? = null
     )
