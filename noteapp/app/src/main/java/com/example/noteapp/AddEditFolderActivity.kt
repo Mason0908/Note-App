@@ -60,7 +60,11 @@ class AddEditFolderActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, MainActivity::class.java)
+                val i = Intent(this, ViewFolderActivity::class.java)
+                i.putExtra("displayFolderId", when(folderId){
+                    -1 -> db.getLatestFolder()?.id?.toInt()
+                    else -> folderId
+                })
                 startActivity(i)
                 finish()
                 return true
@@ -78,16 +82,29 @@ class AddEditFolderActivity : AppCompatActivity() {
                     GlobalScope.launch {
                         eventService.addFolder(id ?: 0, titleField.text.toString(), color)
                     }
-                    startActivity(Intent(this, MainActivity::class.java))
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("displayFolderId", when(folderId){
+                        -1 -> db.getLatestFolder()?.id?.toInt()
+                        else -> folderId
+                    })
+                    startActivity(i)
+                    finish()
+                    return true
                 } else {
                     db.editFolder(folderId, titleField.text.toString())
                     val color = db.getFolderById(folderId)?.color
                     GlobalScope.launch {
                         eventService.addFolder(folderId.toLong(), titleField.text.toString(), color ?: generateColour())
                     }
+
                     val i = Intent(this, ViewFolderActivity::class.java)
-                    i.putExtra("goBackFolder", folderId)
+                    i.putExtra("displayFolderId", when(folderId){
+                        -1 -> db.getLatestFolder()?.id?.toInt()
+                        else -> folderId
+                    })
                     startActivity(i)
+                    finish()
+                    return true
                 }
                 finish()
                 return true
