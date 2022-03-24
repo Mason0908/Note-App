@@ -60,14 +60,18 @@ class AddEditFolderActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, ViewFolderActivity::class.java)
-                i.putExtra("displayFolderId", when(folderId){
-                    -1 -> db.getLatestFolder()?.id?.toInt()
-                    else -> folderId
-                })
-                startActivity(i)
-                finish()
-                return true
+                if(folderId == -1) {
+                    val i = Intent(this, MainActivity::class.java)
+                    startActivity(i)
+                    finish()
+                    return true
+                } else {
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("displayFolderId", folderId)
+                    startActivity(i)
+                    finish()
+                    return true
+                }
             }
 
             R.id.saveChanges -> {

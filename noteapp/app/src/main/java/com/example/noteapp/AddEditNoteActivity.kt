@@ -86,14 +86,27 @@ class AddEditNoteActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, ViewNoteActivity::class.java)
-                i.putExtra("displayNoteId", when(noteId){
-                    -1 -> db.getLatestNote()?.id?.toInt()
-                    else -> noteId
-                })
-                startActivity(i)
-                finish()
-                return true
+                if (noteId == -1) {
+                    if(backMain) {
+                        val i = Intent(this, MainActivity::class.java)
+                        startActivity(i)
+                        finish()
+                        return true
+                    } else {
+                        val i = Intent(this, ViewFolderActivity::class.java)
+                        i.putExtra("displayFolderId", folderId)
+                        startActivity(i)
+                        finish()
+                        return true
+                    }
+                } else {
+                    val i = Intent(this, ViewNoteActivity::class.java)
+                    i.putExtra("displayNoteId", noteId)
+                    startActivity(i)
+                    finish()
+                    return true
+                }
+
             }
             R.id.addTag -> {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
