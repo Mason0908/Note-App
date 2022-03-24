@@ -39,7 +39,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
             val startIndex = folders.size
             val title: String = notes[i-startIndex].title
             val id: Long = notes[i-startIndex].id
-            viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i-startIndex].color))
+            viewHolder.noteCard.setCardBackgroundColor(notes[i-startIndex].color)
             viewHolder.nTitle.text = title
             viewHolder.nID.text = java.lang.String.valueOf(id)
             viewHolder.nDate.text = notes[i-startIndex].modify_date
@@ -49,7 +49,7 @@ class Adapter internal constructor(context: Context?, notes: MutableList<Note>, 
         } else if (allInList[i] is Folder) {
             val title: String = folders[i].title
             val id: Int = folders[i].id.toInt()
-            viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, folders[i].color))
+            viewHolder.noteCard.setCardBackgroundColor(folders[i].color)
             viewHolder.nTitle.text = title
             viewHolder.nID.text = java.lang.String.valueOf(id)
             viewHolder.nDate.text = folders[i].modify_date

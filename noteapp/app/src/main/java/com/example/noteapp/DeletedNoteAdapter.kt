@@ -27,7 +27,7 @@ class DeletedNoteAdapter internal constructor(context: Context?, notes: MutableL
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         val title: String = notes[i].title
         val id: Int = notes[i].id.toInt()
-        viewHolder.noteCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.noteCard.context, notes[i].color))
+        viewHolder.noteCard.setCardBackgroundColor(notes[i].color)
         viewHolder.nTitle.text = title
         viewHolder.nID.text = java.lang.String.valueOf(id)
         viewHolder.nDate.text = ""

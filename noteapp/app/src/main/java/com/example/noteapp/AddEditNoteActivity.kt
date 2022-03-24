@@ -192,16 +192,16 @@ class AddEditNoteActivity : AppCompatActivity() {
         var color = 0
         when(num) {
             1 -> {
-                color = R.color.lightyellow
+                color = -396315
             }
             2 -> {
-                color = R.color.lightblue
+                color = -3858
             }
             3 -> {
-                color = R.color.lightgreyyellow
+                color = -264765
             }
             4 -> {
-                color = R.color.lightpink
+                color = -3083024
             }
         }
         return color

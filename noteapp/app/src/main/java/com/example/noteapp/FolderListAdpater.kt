@@ -49,13 +49,13 @@ class FolderListAdapter internal constructor(context: Context?, folders: Mutable
             var fTitle: String = "Main Board"
             if (i != 0) {
                 fTitle = folders[i - 1].title
-                viewHolder.folderCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.folderCard.context, folders[i - 1].color))
+                viewHolder.folderCard.setCardBackgroundColor(folders[i - 1].color)
             }
             viewHolder.fTitle.text = fTitle
         } else {
             var fTitle: String = folders[i].title
             viewHolder.fTitle.text = fTitle
-            viewHolder.folderCard.setCardBackgroundColor(ContextCompat.getColor(viewHolder.folderCard.context, folders[i].color))
+            viewHolder.folderCard.setCardBackgroundColor(folders[i].color)
         }
 
     }
