@@ -31,6 +31,9 @@
             android:name=".ViewNoteActivity"
             android:exported="false" />
         <activity
+            android:name=".ViewSettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
