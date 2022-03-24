@@ -15,6 +15,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.radiobutton.MaterialRadioButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.text.SimpleDateFormat
 
 /**
@@ -25,6 +29,11 @@ class ViewSettingsActivity : AppCompatActivity(), RadioGroup.OnCheckedChangeList
     AdapterView.OnItemClickListener {
     private var noteId: Int = -1
     private val db = DB(this, null)
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     private var listView: ListView? = null
     private var arrayAdapter: ArrayAdapter<String>? = null
@@ -101,24 +110,60 @@ class ViewSettingsActivity : AppCompatActivity(), RadioGroup.OnCheckedChangeList
         val colorBody: String = "color_body"
         val font: String = "font"
         when(p1) {
-            R.id.black_body ->
+            R.id.black_body -> {
                 db.editNoteSettings(noteId, colorBody, "#000000")
-            R.id.red_body ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), colorBody, "#000000")
+                }
+            }
+            R.id.red_body -> {
                 db.editNoteSettings(noteId, colorBody, "#FF0000")
-            R.id.blue_body ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), colorBody, "#FF0000")
+                }
+            }
+            R.id.blue_body -> {
                 db.editNoteSettings(noteId, colorBody, "#0000FF")
-            R.id.black_heading ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), colorBody, "#0000FF")
+                }
+            }
+            R.id.black_heading -> {
                 db.editNoteSettings(noteId, colorHeading, "#000000")
-            R.id.red_heading ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), colorHeading, "#000000")
+                }
+            }
+            R.id.red_heading -> {
                 db.editNoteSettings(noteId, colorHeading, "#FF0000")
-            R.id.blue_heading ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), colorHeading, "#FF0000")
+                }
+            }
+            R.id.blue_heading -> {
                 db.editNoteSettings(noteId, colorHeading, "#0000FF")
-            R.id.arial ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), colorHeading, "#0000FF")
+                }
+            }
+            R.id.arial -> {
                 db.editNoteSettings(noteId, font, "Arial")
-            R.id.times ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), font, "Arial")
+                }
+            }
+            R.id.times -> {
                 db.editNoteSettings(noteId, font, "Times")
-            R.id.courier ->
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), font, "Times")
+                }
+            }
+            R.id.courier -> {
                 db.editNoteSettings(noteId, font, "Courier")
+                GlobalScope.launch {
+                    eventService.editNoteSetting(noteId.toLong(), font, "Courier")
+                }
+            }
         }
     }
 

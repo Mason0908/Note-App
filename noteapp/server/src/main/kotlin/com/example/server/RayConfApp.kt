@@ -229,9 +229,39 @@ fun Application.main() {
                 call.respond(HttpStatusCode.BadRequest, "Missing param")
             }
         }
+
         get("getAllNotes"){
             call.respondText(contentType = ContentType.Application.Json) {
                 dataSource.getAllNotes().toJsonString()
+            }
+        }
+
+        post("editNoteSetting"){
+            val id = call.request.queryParameters["id"]?.toLong()
+            val field = call.request.queryParameters["field"]
+            val newValue = call.request.queryParameters["newValue"]
+            if (id != null && field != null && newValue != null){
+                dataSource.editNoteSetting(id, field, newValue)
+                call.respondText("Successfully edited note")
+            }
+            else{
+                call.respond(HttpStatusCode.BadRequest, "Missing param")
+            }
+        }
+
+        get("getNoteSetting"){
+            val id = call.request.queryParameters["id"]?.toLong()
+            val field = call.request.queryParameters["field"]
+            if (id != null && field != null){
+                if (dataSource.getNoteSetting(id, field) != null){
+                    call.respondText(dataSource.getNoteSetting(id, field)!!)
+                }
+                else{
+                    call.respond(HttpStatusCode.BadRequest, "Current field not supported")
+                }
+            }
+            else{
+                call.respond(HttpStatusCode.BadRequest, "Missing param")
             }
         }
     }

@@ -47,12 +47,17 @@ data class Note (
     var color: Int,
     var tags: String?,
     var modify_date: String? = null,
-    var delete_date: String? = null
+    var delete_date: String? = null,
+    var color_heading: String? = null,
+    var color_body: String? = null,
+    var font: String? = null
 ){
     override fun equals(other: Any?): Boolean {
         return (other is Note) && (id == other.id) && (folderId == other.folderId) &&
                 (title == other.title) && (body == other.body) && (isLocked == other.isLocked) &&
-                (password == other.password) && (color == other.color) && (tags == other.tags)
+                (password == other.password) && (color == other.color) && (tags == other.tags) &&
+                (color_body == other.color_body) && (color_heading == color_heading) &&
+                (font == other.font)
     }
 }
 

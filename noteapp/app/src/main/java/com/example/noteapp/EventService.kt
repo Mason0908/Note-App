@@ -82,6 +82,15 @@ interface EventService {
 
     @GET("getAllNotes")
     suspend fun getAllNotes(): List<Note>
+
+    @POST("editNoteSetting")
+    suspend fun editNoteSetting(@Query("id") id: Long,
+                                @Query("field") field: String,
+                                @Query("newValue") newValue: String)
+
+    @GET("getNoteSetting")
+    suspend fun getNoteSetting(@Query("id") id: Long,
+                               @Query("field") field: String)
 }
 
 val Retrofit.eventService: EventService get() = this.create(EventService::class.java)

@@ -26,6 +26,18 @@ private fun Note.toEntity() = Entity(NoteEntryName, id).apply {
     setProperty("tags", tags)
     setProperty("modify_date", modify_date)
     setProperty("delete_date", delete_date)
+    setProperty("color_heading", when(color_heading){
+        null -> "#000000"
+        else -> color_heading
+    })
+    setProperty("color_body", when(color_body){
+        null -> "#000000"
+        else -> color_body
+    })
+    setProperty("font", when(font){
+        null -> "Arial"
+        else -> font
+    })
 }
 
 private fun Entity.toNote() = Note(
@@ -47,7 +59,10 @@ private fun Entity.toNote() = Note(
     modify_date = getProperty("modify_date").toString(),
     delete_date = when(getProperty("delete_date")) {
         null -> null
-        else -> getProperty("delete_date").toString()}
+        else -> getProperty("delete_date").toString()},
+    color_heading = getProperty("color_heading").toString(),
+    color_body = getProperty("color_body").toString(),
+    font = getProperty("font").toString()
 )
 
 private fun Entity.toFolder() = Folder(
@@ -82,12 +97,24 @@ class DataSource {
         note.setProperty("color", color)
         note.setProperty("tags", tags)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("America/Los_Angeles")
+        dateFormat.timeZone = TimeZone.getTimeZone("EST")
         val date = Date()
         note.setProperty("modify_date", dateFormat.format(date))
         note.setProperty("delete_date", when(note.getProperty("delete_date")){
             null -> null
             else -> note.getProperty("delete_date").toString()
+        })
+        note.setProperty("color_heading", when(note.getProperty("color_heading")){
+            null -> "#000000"
+            else -> note.getProperty("color_heading")
+        })
+        note.setProperty("color_body", when(note.getProperty("color_body")){
+            null -> "#000000"
+            else -> note.getProperty("color_body")
+        })
+        note.setProperty("font", when(note.getProperty("font")){
+            null -> "Arial"
+            else -> note.getProperty("font")
         })
         dataStore.put(note)
     }
@@ -98,7 +125,7 @@ class DataSource {
         folder.setProperty("title", title)
         folder.setProperty("color", color)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("America/Los_Angeles")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Toronto")
         val date = Date()
         folder.setProperty("modify_date", dateFormat.format(date))
         dataStore.put(folder)
@@ -146,7 +173,7 @@ class DataSource {
         val curr = getNoteById(id)
         val note = curr.toEntity()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("America/Los_Angeles")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Toronto")
         val date = Date()
         note.setProperty("delete_date", dateFormat.format(date))
         note.setProperty("folderId", -1)
@@ -238,5 +265,26 @@ class DataSource {
         val query = Query(NoteEntryName)
         val prep = dataStore.prepare(query)
         return prep.asList(FetchOptions.Builder.withDefaults()).map {it.toNote()}
+    }
+
+    fun editNoteSetting(id: Long, field: String, newValue: String){
+        val curr = getNoteById(id)
+        val note = curr.toEntity()
+        note.setProperty(field, newValue)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Toronto")
+        val date = Date()
+        note.setProperty("modify_date", dateFormat.format(date))
+        dataStore.put(note)
+    }
+
+    fun getNoteSetting(id: Long, field: String) : String?{
+        val note = getNoteById(id)
+        return when(field){
+            "color_heading" -> note.color_heading
+            "color_body" -> note.color_body
+            "font" -> note.font
+            else -> null
+        }
     }
 }

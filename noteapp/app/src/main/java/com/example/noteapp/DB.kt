@@ -47,35 +47,16 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 "\tcolor INTEGER DEFAULT 0 NOT NULL,\n" +
                 "\ttags TEXT,\n" +
                 "\tmodify_date DATETIME,\n" +
-                "FOREIGN KEY (folder_id) REFERENCES folders(id));")
-        // we are calling sqlite
-        // method for executing our query
-        db.execSQL(query)
-    }
-
-    override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        val query1 = ("DROP TABLE notes;")
-        db.execSQL(query1)
-        //val query = ("ALTER TABLE notes " +
-        //        "ADD color_heading TEXT DEFAULT '#000000',\n" +
-        //        "color_body TEXT DEFAULT '#000000',\n" +
-        //        "font TEXT DEFAULT 'Arial';")
-        val query = ("CREATE TABLE notes (\n" +
-                "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "\tfolder_id INTEGER,\n" +
-                "\ttitle TEXT,\n" +
-                "\tbody TEXT,\n" +
-                "\tlocked INTEGER DEFAULT 0 NOT NULL,\n" +
-                "\tpassword TEXT,\n" +
-                "\tcolor INTEGER DEFAULT 0 NOT NULL,\n" +
-                "\ttags TEXT,\n" +
-                "\tmodify_date DATETIME,\n" +
                 "\tdelete_date DATETIME,\n" +
                 "\tcolor_heading TEXT DEFAULT '#000000',\n" +
                 "\tcolor_body TEXT DEFAULT '#000000',\n" +
                 "\tfont TEXT DEFAULT 'Arial', \n" +
                 "FOREIGN KEY (folder_id) REFERENCES folders(id));")
         db.execSQL(query)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
+
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -95,6 +76,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     values.put("tags", note.tags)
                     values.put("modify_date", note.modify_date)
                     values.put("locked", note.isLocked)
+                    values.put("color_body", note.color_body)
+                    values.put("color_heading", note.color_heading)
+                    values.put("font", note.font)
                     if (note.folderId != null){
                         values.put("folder_id", note.folderId)
                     }
@@ -127,6 +111,9 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 values.put("tags", note.tags)
                 values.put("modify_date", note.modify_date)
                 values.put("locked", note.isLocked)
+                values.put("color_body", note.color_body)
+                values.put("color_heading", note.color_heading)
+                values.put("font", note.font)
                 if (note.folderId != null){
                     values.put("folder_id", note.folderId)
                 }
@@ -575,10 +562,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val filteredNotes = mutableListOf<Note>()
         val allNotes = getNotesWithNoFolder(sortBy, sortMethod)
         filteredNotes.addAll(allNotes.filter { note ->
-            note.body.contains(
-                criteria,
-                true
-            ) || note.title.contains(criteria, true)
+            note.body.contains(criteria, true) || note.title.contains(criteria, true) || note.tags?.contains(criteria, true) ?: false
         } as MutableList<Note>)
         return filteredNotes
     }
@@ -590,10 +574,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val filteredNotes = mutableListOf<Note>()
         val allNotes = getAllFolderNotesObject(folderId, sortBy, sortMethod)
         filteredNotes.addAll(allNotes!!.filter { note ->
-            note.body.contains(
-                criteria,
-                true
-            ) || note.title.contains(criteria, true)
+            note.body.contains(criteria, true) || note.title.contains(criteria, true) || note.tags?.contains(criteria, true) ?: false
         } as MutableList<Note>)
         return filteredNotes
     }
