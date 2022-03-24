@@ -54,18 +54,21 @@
             android:id="@+id/black_heading"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="Black" />
 
         <RadioButton
             android:id="@+id/red_heading"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/red"
             android:text="Red" />
 
         <RadioButton
             android:id="@+id/blue_heading"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/blue"
             android:text="Blue" />
 
     </RadioGroup>
@@ -86,18 +89,21 @@
             android:id="@+id/black_body"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="Black" />
 
         <RadioButton
             android:id="@+id/red_body"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/red"
             android:text="Red" />
 
         <RadioButton
             android:id="@+id/blue_body"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/blue"
             android:text="Blue" />
     </RadioGroup>
 
@@ -117,18 +123,21 @@
             android:id="@+id/arial"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/arial"
             android:text="Arial" />
 
         <RadioButton
             android:id="@+id/times"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/times"
             android:text="Times" />
 
         <RadioButton
             android:id="@+id/courier"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/courier"
             android:text="Courier" />
     </RadioGroup>
 

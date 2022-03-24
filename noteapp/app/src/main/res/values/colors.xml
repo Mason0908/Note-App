@@ -11,4 +11,6 @@
     <color name="lightgreyyellow">#F9F3E5</color>
     <color name="lightpink">#FFF0EE</color>
     <color name="lightyellow">#FBF5C3</color>
+    <color name="blue">#0000FF</color>
+    <color name="red">#FF0000</color>
 </resources>
