@@ -1,6 +1,7 @@
 package com.example.noteapp
 
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.common.Note
 import org.junit.Assert
 import org.junit.Test
 
@@ -128,11 +129,11 @@ class NoteDBTest {
     @Test
     fun search_note() {
         Assert.assertEquals(0, db.getAllNotes().size)
-        db.addNote("title", "body", 1, null, 1)
-        db.addNote("TITLE", "nAh", 2, null, 1)
+        db.addNote("title", "body", 1, null, null)
+        db.addNote("TITLE", "nAh", 2, null, null)
         Assert.assertEquals(2, db.getAllNotes().size)
         numOfNote = db.getAllNotes()[0].id.toInt()
-        val searchTitle = db.getSearchNotes("tITLe")
+        val searchTitle = db.getSearchNotes("title")
         Assert.assertEquals(2, searchTitle.size)
         Assert.assertEquals("title", searchTitle[0].title)
         Assert.assertEquals("TITLE", searchTitle[1].title)
@@ -187,6 +188,12 @@ class NoteDBTest {
 
     @Test
     fun note_has_folder_bool() {
+        for (i in 0 .. db.getAllNotes().size - 1) {
+            db.removeNote(db.getAllNotes()[i].id.toInt())
+        }
+        for (i in 0 .. db.getAllFolders().size - 1) {
+            db.removeFolder(db.getAllFolders()[i].id.toInt())
+        }
         Assert.assertEquals(0, db.getAllFolders().size)
         db.addFolder("f1", 1)
         Assert.assertEquals(1, db.getAllFolders().size)
@@ -223,10 +230,82 @@ class NoteDBTest {
         numOfNote = db.getAllNotes()[0].id.toInt()
         db.moveNoteToMainBoard(numOfNote)
         // note that null is 0 in testDB ?
-        Assert.assertEquals(0, db.getNoteById(numOfNote)?.folderId)
+        Assert.assertEquals(null, db.getNoteById(numOfNote)?.folderId)
         db.removeNote(numOfNote)
         Assert.assertEquals(0, db.getAllNotes().size)
     }
 
+    @Test
+    fun edit_note_settings() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.editNoteSettings(numOfNote, "title", "this is a new title")
+        Assert.assertEquals("this is a new title", db.getNoteById(numOfNote)?.title)
+        db.editNoteSettings(numOfNote, "body", "this is a new body")
+        Assert.assertEquals("this is a new body", db.getNoteById(numOfNote)?.body)
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    @Test
+    fun get_latest_note() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        val note = db.getNoteById(numOfNote)
+        Assert.assertEquals(note, db.getLatestNote())
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    @Test
+    fun get_delete_notes() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.removeNoteTemporarily(numOfNote)
+        Assert.assertEquals(1, db.getDeletedNotes().size)
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    @Test
+    fun get_heading_color() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.editNoteSettings(numOfNote, "color_heading", "red")
+        Assert.assertEquals("red", db.getHeadingColorOfNote(numOfNote))
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    @Test
+    fun get_body_color() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.editNoteSettings(numOfNote, "color_body", "red")
+        Assert.assertEquals("red", db.getBodyColorOfNote(numOfNote))
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    @Test
+    fun get_note_font() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        Assert.assertEquals("Arial", db.getFontOfNote(numOfNote))
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
     // endregion
 }
