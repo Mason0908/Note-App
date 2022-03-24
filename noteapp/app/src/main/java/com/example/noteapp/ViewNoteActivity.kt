@@ -1,11 +1,20 @@
 package com.example.noteapp
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.text.InputType
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.Menu
@@ -14,6 +23,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
@@ -22,7 +32,11 @@ import androidx.recyclerview.widget.RecyclerView
 import br.tiagohm.markdownview.MarkdownView
 import br.tiagohm.markdownview.css.InternalStyleSheet
 import br.tiagohm.markdownview.css.styles.Github
-
+import androidx.core.app.ActivityCompat
+import com.google.android.material.internal.ViewUtils.getContentView
+import java.io.File
+import java.io.FileOutputStream
+import java.util.jar.Pack200
 
 class ViewNoteActivity : AppCompatActivity() {
     private lateinit var noteDisplay: MarkdownView
@@ -34,6 +48,8 @@ class ViewNoteActivity : AppCompatActivity() {
 
     private var tags: String = ""
     private lateinit var adapter: TagAdapterForView
+    val pageWidth = 1200
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +124,7 @@ class ViewNoteActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.settings -> {
@@ -172,6 +189,64 @@ class ViewNoteActivity : AppCompatActivity() {
                 startActivity(i)
                 finish()
                 return true
+            }
+            R.id.export -> {
+                val arr = Array<String>(1){Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                ActivityCompat.requestPermissions(this,
+                    arr, PackageManager.PERMISSION_GRANTED)
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    // region draw context to pdf document
+                    var generatePDF = PdfDocument()
+                    var pageInfo = PdfDocument.PageInfo.Builder(1200, 2010, 1).create()
+                    var page = generatePDF.startPage(pageInfo)
+                    var canvas = page.canvas
+
+                    var titlePaint = Paint()
+                    titlePaint.textAlign = Paint.Align.CENTER
+                    titlePaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
+                    titlePaint.textSize = 70F
+                    canvas.drawText(
+                        "${db.getNoteById(noteId)?.title}",
+                        (pageWidth / 2).toFloat(), 270.0F, titlePaint
+                    )
+
+                    var bodyPaint = TextPaint()
+                    bodyPaint.textAlign = Paint.Align.LEFT
+                    bodyPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+                    bodyPaint.textSize = 70F
+//                canvas.drawText("${db.getNoteById(noteId)?.body}",
+//                    30.0F, 400.0F, bodyPaint)
+                    var bodyStaticLayout = StaticLayout(
+                        "${db.getNoteById(noteId)?.body}", bodyPaint, canvas.width,
+                        Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false
+                    )
+                    canvas.save()
+                    canvas.translate(30.0f, 400.0f)
+                    bodyStaticLayout.draw(canvas)
+                    canvas.restore()
+
+                    generatePDF.finishPage(page)
+                    // endregion
+
+                    // region write pdf file to the phone external storage
+                    val file = File(getExternalFilesDir(null), "/Note$noteId.pdf")
+                    generatePDF.writeTo(FileOutputStream(file))
+                    // endregion
+
+                    Toast.makeText(
+                        this,
+                        "File exports to ${getExternalFilesDir(null).toString()}/Note$noteId.pdf",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    generatePDF.close()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Permission denied",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -280,6 +355,7 @@ class ViewNoteActivity : AppCompatActivity() {
                 Toast.makeText(this, "Note unlocked!", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun displayTagsList() {

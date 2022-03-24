@@ -29,10 +29,10 @@ internal class NoteTest {
             noteBoard.addNote("${i+1}", "",2)
         }
         for (i in 0 .. 29) {
-            noteBoard.removeNote(i)
+            noteBoard.removeNote(i.toLong())
         }
         for (i in 30 .. 99) {
-            val note = noteBoard.getNoteById(i)
+            val note = noteBoard.getNoteById(i.toLong())
             assertEquals(note?.title, (i + 1).toString())
         }
         val expected = 70
@@ -45,12 +45,12 @@ internal class NoteTest {
             noteBoard.addNote("${i+1}", "",3)
         }
         for (i in 50 .. 89) {
-            noteBoard.lockNote(i, "123")
+            noteBoard.lockNote(i.toLong(), "123")
         }
         val expected = 40
         var countLock = 0
         for (i in 0 until noteBoard.getAllNotes().size) {
-            if (noteBoard.getNoteById(i)?.isLocked == true) {
+            if (noteBoard.getNoteById(i.toLong())?.isLocked == true) {
                 countLock++
             }
         }
@@ -63,15 +63,15 @@ internal class NoteTest {
             noteBoard.addNote("${i+1}", "", 4)
         }
         for (i in 50 .. 89) {
-            noteBoard.lockNote(i, "123")
+            noteBoard.lockNote(i.toLong(), "123")
         }
         for (i in 50 .. 59) {
-            noteBoard.unlockNote(i)
+            noteBoard.unlockNote(i.toLong())
         }
         val expected = 70
         var countUnlock = 0
         for (i in 0 until noteBoard.getAllNotes().size) {
-            if (noteBoard.getNoteById(i)?.isLocked == false) {
+            if (noteBoard.getNoteById(i.toLong())?.isLocked == false) {
                 countUnlock++
             }
         }
