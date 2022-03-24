@@ -76,7 +76,7 @@ class ViewNoteActivity : AppCompatActivity() {
                     wordCount.setText("     Number of words: 0     Number of lines: 0")
                 } else {
                 wordCount.setText(
-                        "     Number of words: " + words?.split("\\s+".toRegex())?.size +
+                        "\n     Number of words: " + words?.split("\\s+".toRegex())?.size +
                         "     Number of lines: " + (body?.lines()?.size!! - linesToRemove))
 
                 noteDisplay.loadMarkdown(currNote.body)
@@ -288,6 +288,11 @@ class ViewNoteActivity : AppCompatActivity() {
         println("should change color")
         //css.endMedia()
         css.addRule("h1", "color: $colorHeading", "font-family: $font")
+        css.addRule("h2", "color: $colorHeading", "font-family: $font")
+        css.addRule("h3", "color: $colorHeading", "font-family: $font")
+        css.addRule("h4", "color: $colorHeading", "font-family: $font")
+        css.addRule("h5", "color: $colorHeading", "font-family: $font")
+        css.addRule("h6", "color: $colorHeading", "font-family: $font")
         css.addRule("*", "color: $colorBody", "font-family: $font")
         return css
     }

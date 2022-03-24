@@ -58,7 +58,7 @@ class AddEditNoteActivity : AppCompatActivity() {
         }
         // Get reference for tag list
         tagBoard = findViewById(R.id.tagBoard)
-        
+
         // Tying with the adapter
         tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         adapter = TagAdapterForEdit(this, tags, tagBoard, this)

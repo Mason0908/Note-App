@@ -28,10 +28,9 @@
 
     <br.tiagohm.markdownview.MarkdownView
         android:id="@+id/noteDisplay"
-        android:layout_width="471dp"
-        android:layout_height="560dp"
+        android:layout_width="412dp"
+        android:layout_height="604dp"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="5dp"
         android:fadeScrollbars="true"
         android:fontFamily="@font/bigheroes"
         android:scrollbars="vertical"
@@ -42,6 +41,7 @@
         app:escapeHtml="false"
         app:layout_constraintBottom_toTopOf="@+id/wordCount"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tagBoard"
         app:layout_constraintVertical_bias="0.0" />
@@ -50,8 +50,9 @@
         android:id="@+id/wordCount"
         android:layout_width="385dp"
         android:layout_height="38dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="2dp"
         android:layout_marginBottom="4dp"
+        android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
