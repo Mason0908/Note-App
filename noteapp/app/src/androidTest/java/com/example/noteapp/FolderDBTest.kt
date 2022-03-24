@@ -87,4 +87,20 @@ class FolderDBTest {
     }
 
     // endregion
+
+    // region Sprint3
+    @Test
+    fun get_latest_folder() {
+        Assert.assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        Assert.assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id.toInt()
+        val folder = db.getFolderById(numOfFolder)
+        if (folder != null) {
+            db.getLatestFolder()?.let { Assert.assertEquals(folder.id, it.id) }
+        }
+        db.removeFolder(numOfFolder)
+        Assert.assertEquals(0, db.getAllFolders().size)
+    }
+    // endregion
 }
