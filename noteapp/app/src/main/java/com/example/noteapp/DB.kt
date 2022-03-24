@@ -351,7 +351,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put(field, newValue)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val date = Date()
-        println("Should get modified $newValue")
+        //println("Should get modified $newValue")
         values.put("modify_date", dateFormat.format(date))
         val db = this.writableDatabase
         db.update(TABLE_NOTES_NAME, values, "id=$id", null)

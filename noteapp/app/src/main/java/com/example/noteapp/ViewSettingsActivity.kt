@@ -65,9 +65,7 @@ class ViewSettingsActivity : AppCompatActivity(), RadioGroup.OnCheckedChangeList
     }
 
     override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        println("we should be here!")
         var items: String = p0?.getItemAtPosition(p2) as String
-        println(items)
         Toast.makeText(applicationContext, "Color Name : $items", Toast.LENGTH_LONG).show()
     }
 
@@ -102,7 +100,6 @@ class ViewSettingsActivity : AppCompatActivity(), RadioGroup.OnCheckedChangeList
         val colorHeading: String = "color_heading"
         val colorBody: String = "color_body"
         val font: String = "font"
-        println(p1)
         when(p1) {
             R.id.black_body ->
                 db.editNoteSettings(noteId, colorBody, "#000000")
@@ -136,8 +133,7 @@ class ViewSettingsActivity : AppCompatActivity(), RadioGroup.OnCheckedChangeList
         val radioButtonColorFontTimes: RadioButton = findViewById(R.id.times)
         val radioButtonColorFontCourier: RadioButton = findViewById(R.id.courier)
 
-        println("why does this not work anymore???")
-        println("$colorHeading, $colorBody, $font")
+        //println("$colorHeading, $colorBody, $font")
         when(colorHeading) {
             "#000000" -> {
                 radioButtonColorHeadingBlack.isChecked = true
@@ -155,7 +151,6 @@ class ViewSettingsActivity : AppCompatActivity(), RadioGroup.OnCheckedChangeList
             }
             "#FF0000" -> {
                 radioButtonColorBodyRed.isChecked = true
-                println("should be checked")
             }
             "#0000FF" -> {
                 radioButtonColorBodyBlue.isChecked = true

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         setContentView(R.layout.activity_main)
         notes = db.getNotesWithNoFolder()
         folders = db.getAllFolders()
-        println("folder: " + folders)
+        //println("folder: " + folders)
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)

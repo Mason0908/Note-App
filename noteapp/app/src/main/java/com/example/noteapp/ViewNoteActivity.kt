@@ -96,9 +96,6 @@ class ViewNoteActivity : AppCompatActivity() {
                         "     Number of lines: " + (body?.lines()?.size!! - linesToRemove))
 
                 noteDisplay.loadMarkdown(currNote.body)
-                    noteDisplay.addStyleSheet(css)
-
-
                 //noteDisplay.text = currNote.body
                 }
             }
@@ -179,13 +176,11 @@ class ViewNoteActivity : AppCompatActivity() {
             R.id.editNote -> {
                 val markdownView: MarkdownView = findViewById(R.id.noteDisplay)
                 markdownView.addStyleSheet(Github())
-                markdownView.loadMarkdown("**MarkdownView**")
+                //markdownView.loadMarkdown("**MarkdownView**")
                 val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.jacksimba)
                 //markdownView.setTypeface(typeface)
-                println("editing note")
                 val i = Intent(this, AddEditNoteActivity::class.java)
                 i.putExtra("editNoteId", noteId)
-                //i.putExtra("editFolderId", folderId)
                 startActivity(i)
                 finish()
                 return true
@@ -370,7 +365,6 @@ class ViewNoteActivity : AppCompatActivity() {
         //css.addFontFace("MyFont", "condensed", "italic", "bold", "url('myfont.ttf')")
         //css.addMedia("screen and (min-width: 1281px)")
         //css.addRule("h1", "color: blue")
-        println("should change color")
         //css.endMedia()
         css.addRule("h1", "color: $colorHeading", "font-family: $font")
         css.addRule("h2", "color: $colorHeading", "font-family: $font")
@@ -379,7 +373,6 @@ class ViewNoteActivity : AppCompatActivity() {
         css.addRule("h5", "color: $colorHeading", "font-family: $font")
         css.addRule("h6", "color: $colorHeading", "font-family: $font")
         css.addRule("*", "color: $colorBody", "font-family: $font")
-        println("rule should be added")
         return css
     }
 }
