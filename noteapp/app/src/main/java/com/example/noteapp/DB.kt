@@ -54,10 +54,28 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        if (p1 < 2){
-            val query = "ALTER TABLE notes ADD delete_date DATETIME;"
-            db.execSQL(query)
-        }
+        val query1 = ("DROP TABLE notes;")
+        db.execSQL(query1)
+        //val query = ("ALTER TABLE notes " +
+        //        "ADD color_heading TEXT DEFAULT '#000000',\n" +
+        //        "color_body TEXT DEFAULT '#000000',\n" +
+        //        "font TEXT DEFAULT 'Arial';")
+        val query = ("CREATE TABLE notes (\n" +
+                "\tid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "\tfolder_id INTEGER,\n" +
+                "\ttitle TEXT,\n" +
+                "\tbody TEXT,\n" +
+                "\tlocked INTEGER DEFAULT 0 NOT NULL,\n" +
+                "\tpassword TEXT,\n" +
+                "\tcolor INTEGER DEFAULT 0 NOT NULL,\n" +
+                "\ttags TEXT,\n" +
+                "\tmodify_date DATETIME,\n" +
+                "\tdelete_date DATETIME,\n" +
+                "\tcolor_heading TEXT DEFAULT '#000000',\n" +
+                "\tcolor_body TEXT DEFAULT '#000000',\n" +
+                "\tfont TEXT DEFAULT 'Arial', \n" +
+                "FOREIGN KEY (folder_id) REFERENCES folders(id));")
+        db.execSQL(query)
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -381,6 +399,30 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     /**
+     * @Description Get folder id of a note
+     */
+    fun getHeadingColorOfNote(noteId: Int): String? {
+        val note = getNoteById(noteId)
+        return note?.color_heading ?: null
+    }
+
+    /**
+     * @Description Get folder id of a note
+     */
+    fun getBodyColorOfNote(noteId: Int): String? {
+        val note = getNoteById(noteId)
+        return note?.color_body ?: null
+    }
+
+    /**
+     * @Description Get folder id of a note
+     */
+    fun getFontOfNote(noteId: Int): String? {
+        val note = getNoteById(noteId)
+        return note?.font ?: null
+    }
+
+    /**
      * @Description Check if a note has a folder id
      */
     fun noteHasFolder(id: Int): Boolean {
@@ -445,6 +487,22 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put("tags", newTags)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val date = Date()
+        values.put("modify_date", dateFormat.format(date))
+        val db = this.writableDatabase
+        db.update(TABLE_NOTES_NAME, values, "id=$id", null)
+        db.close()
+    }
+
+    /**
+     * @Description Changing a note's heading colour or body colour or font
+     */
+    fun editNoteSettings(id: Int, field: String, newValue: String) {
+        val values = ContentValues()
+
+        values.put(field, newValue)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = Date()
+        //println("Should get modified $newValue")
         values.put("modify_date", dateFormat.format(date))
         val db = this.writableDatabase
         db.update(TABLE_NOTES_NAME, values, "id=$id", null)
@@ -600,7 +658,11 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             cursor!!.getString(cursor.getColumnIndex("password")),
             cursor!!.getInt(cursor.getColumnIndex("color")),
             cursor!!.getString(cursor.getColumnIndex("tags")),
-            cursor!!.getString(cursor.getColumnIndex("modify_date"))
+            cursor!!.getString(cursor.getColumnIndex("modify_date")),
+            cursor!!.getString(cursor.getColumnIndex("delete_date")),
+            cursor!!.getString(cursor.getColumnIndex("color_heading")),
+            cursor!!.getString(cursor.getColumnIndex("color_body")),
+            cursor!!.getString(cursor.getColumnIndex("font"))
         )
         if (note.folderId == 0){
             note.folderId = null
@@ -672,7 +734,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private const val DATABASE_NAME = "NoteApp"
 
         // below is the variable for database version
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
 
         // below is the variable for notes table name
         const val TABLE_NOTES_NAME = "notes"

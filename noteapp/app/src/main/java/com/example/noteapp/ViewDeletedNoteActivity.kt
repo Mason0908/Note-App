@@ -45,7 +45,7 @@ class ViewDeletedNoteActivity : AppCompatActivity() {
         noteId = i.getIntExtra("deletedNoteId", -1)
 
         if (noteId >= 0) {
-            println("DELETED NOTE ID: $noteId")
+            //println("DELETED NOTE ID: $noteId")
             val currNote = db.getNoteById(noteId)!!
             supportActionBar!!.title = currNote.title
             noteDisplay.text = currNote.body

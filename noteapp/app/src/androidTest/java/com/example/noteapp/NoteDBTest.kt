@@ -46,7 +46,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, null, 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         db.removeNote(numOfNote)
         Assert.assertEquals(0, db.getAllNotes().size)
     }
@@ -56,7 +56,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, null, 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         db.editNote(numOfNote, "new title", "new body", "add tag")
         val curr = db.getAllNotes()[0]
         Assert.assertEquals("new title", curr.title)
@@ -71,7 +71,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, null, 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         db.addNote("title2", "body2", 2, "tag", 1)
         Assert.assertEquals(2, db.getAllNotes().size)
         val getNoteByID = db.getNoteById(numOfNote)
@@ -92,7 +92,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, null, 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         Assert.assertEquals(true, db.hasNote(numOfNote))
         db.removeNote(numOfNote)
         Assert.assertEquals(0, db.getAllNotes().size)
@@ -103,7 +103,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, null, 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         db.lockNote(numOfNote, "password")
         Assert.assertEquals("password", db.getNoteById(numOfNote)?.password)
         Assert.assertEquals(true, db.getNoteById(numOfNote)?.isLocked)
@@ -117,7 +117,7 @@ class NoteDBTest {
         db.addNote("title", "body", 1, null, 1)
         Assert.assertEquals(1, db.getAllNotes().size)
         db.lockNote(numOfNote, "password")
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         db.unlockNote(numOfNote)
         Assert.assertEquals(false, db.getNoteById(numOfNote)?.isLocked)
         Assert.assertEquals(null, db.getNoteById(numOfNote)?.password)
@@ -131,7 +131,7 @@ class NoteDBTest {
         db.addNote("title", "body", 1, null, 1)
         db.addNote("TITLE", "nAh", 2, null, 1)
         Assert.assertEquals(2, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         val searchTitle = db.getSearchNotes("tITLe")
         Assert.assertEquals(2, searchTitle.size)
         Assert.assertEquals("title", searchTitle[0].title)
@@ -152,7 +152,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, "has tag", 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         Assert.assertEquals(false, db.hasTag("hh", numOfNote))
         Assert.assertEquals(true, db.hasTag("has tag", numOfNote))
         db.removeNote(numOfNote)
@@ -164,7 +164,7 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllNotes().size)
         db.addNote("title", "body", 1, "has tag", 1)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         Assert.assertEquals("has tag", db.getTags(numOfNote))
         db.removeNote(numOfNote)
         Assert.assertEquals(0, db.getAllNotes().size)
@@ -175,10 +175,10 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllFolders().size)
         db.addFolder("f1", 1)
         Assert.assertEquals(1, db.getAllFolders().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.addNote("title", "body", 1, null, numOfFolder)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         Assert.assertEquals(numOfFolder, db.getFolderIdOfNote(numOfNote))
         db.removeNote(numOfNote)
         db.removeFolder(numOfFolder)
@@ -190,10 +190,10 @@ class NoteDBTest {
         Assert.assertEquals(0, db.getAllFolders().size)
         db.addFolder("f1", 1)
         Assert.assertEquals(1, db.getAllFolders().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.addNote("title", "body", 1, null, numOfFolder)
         Assert.assertEquals(1, db.getAllNotes().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         Assert.assertEquals(true, db.noteHasFolder(numOfNote))
         db.removeNote(numOfNote)
         db.removeFolder(numOfFolder)
@@ -201,4 +201,32 @@ class NoteDBTest {
     }
 
     //endregion
+
+    // region Sprint 3
+    @Test
+    fun remove_note_temporarily() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.removeNoteTemporarily(numOfNote)
+        Assert.assertEquals(-1, db.getNoteById(numOfNote)?.folderId)
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    @Test
+    fun move_to_main_board() {
+        Assert.assertEquals(0, db.getAllNotes().size)
+        db.addNote("title", "body", 1, null, 1)
+        Assert.assertEquals(1, db.getAllNotes().size)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.moveNoteToMainBoard(numOfNote)
+        // note that null is 0 in testDB ?
+        Assert.assertEquals(0, db.getNoteById(numOfNote)?.folderId)
+        db.removeNote(numOfNote)
+        Assert.assertEquals(0, db.getAllNotes().size)
+    }
+
+    // endregion
 }

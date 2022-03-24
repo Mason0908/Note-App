@@ -12,6 +12,16 @@
         android:icon="@drawable/lock_icon"
         android:title="Lock/Unlock"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/export"
+        android:icon="@drawable/baseline_picture_as_pdf_24"
+        android:title="Export to PDF"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/settings_icon"
+        android:title="Settings" />
     <item
         android:id="@+id/deleteNote"
         android:icon="@drawable/delete_icon"
@@ -21,5 +31,6 @@
         android:id="@+id/editNote"
         android:icon="@drawable/edit_icon"
         android:title="Edit"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
+
 </menu>

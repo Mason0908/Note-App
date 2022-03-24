@@ -1,10 +1,20 @@
 package com.example.noteapp
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.text.InputType
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.Menu
@@ -13,10 +23,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import br.tiagohm.markdownview.MarkdownView
+import br.tiagohm.markdownview.css.InternalStyleSheet
+import br.tiagohm.markdownview.css.styles.Github
+import androidx.core.app.ActivityCompat
+import com.google.android.material.internal.ViewUtils.getContentView
+import java.io.File
+import java.io.FileOutputStream
+import java.util.jar.Pack200
 import com.example.common.Note
 import com.example.common.Folder
 import kotlinx.coroutines.GlobalScope
@@ -25,11 +45,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ViewNoteActivity : AppCompatActivity() {
-    private lateinit var noteDisplay: TextView
+    private lateinit var noteDisplay: MarkdownView
     private var noteId: Int = -1
     private var folderId: Int? = null
     private val db = DB(this, null)
     private lateinit var tagBoard: RecyclerView
+    private lateinit var wordCount: TextView
+
     private var tags: String = ""
     private lateinit var adapter: TagAdapterForView
     private val eventService = Retrofit.Builder()
@@ -37,12 +59,15 @@ class ViewNoteActivity : AppCompatActivity() {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .eventService
+    val pageWidth = 1200
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_note)
 
         noteDisplay = findViewById(R.id.noteDisplay)
+        wordCount = findViewById(R.id.wordCount)
 
         // the action bar with current note title and delete
         val actionBar: Toolbar = findViewById(R.id.toolbar)
@@ -58,7 +83,32 @@ class ViewNoteActivity : AppCompatActivity() {
                 showLockedNoteAlert(currNote)
             } else {
                 supportActionBar!!.title = currNote.title
-                noteDisplay.text = currNote.body
+                //noteDisplay.addStyleSheet(Github())
+                val css: InternalStyleSheet = cssStyleSheet(currNote.color_heading, currNote.color_body, currNote.font)
+                noteDisplay.addStyleSheet(css)
+                val body: String? = currNote?.body
+                val words: String? = body?.trim()
+                val lines: List<String>? = body?.lines()
+                val frequencyMap: MutableMap<String, Int> = HashMap()
+                for (s in lines!!) {
+                    var count = frequencyMap[s]
+                    if (count == null) count = 0
+                    frequencyMap[s] = count + 1
+                }
+                var linesToRemove: Int = 0;
+                if (frequencyMap.containsKey("")) {
+                    linesToRemove = frequencyMap[""]!!
+                }
+                if (body.length == 0) {
+                    wordCount.setText("     Number of words: 0     Number of lines: 0")
+                } else {
+                wordCount.setText(
+                        "\n     Number of words: " + words?.split("\\s+".toRegex())?.size +
+                        "     Number of lines: " + (body?.lines()?.size!! - linesToRemove))
+
+                noteDisplay.loadMarkdown(currNote.body)
+                //noteDisplay.text = currNote.body
+                }
             }
             tags = db.getTags(noteId)
             if (db.noteHasFolder(noteId)) {
@@ -82,8 +132,14 @@ class ViewNoteActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
+            R.id.settings -> {
+                val i = Intent(this, ViewSettingsActivity::class.java)
+                i.putExtra("editNoteId", noteId)
+                startActivity(i)
+            }
             android.R.id.home -> {
                 if (folderId != null) {
                     val i = Intent(this, ViewFolderActivity::class.java)
@@ -132,12 +188,74 @@ class ViewNoteActivity : AppCompatActivity() {
                 return true
             }
             R.id.editNote -> {
+                val markdownView: MarkdownView = findViewById(R.id.noteDisplay)
+                markdownView.addStyleSheet(Github())
+                //markdownView.loadMarkdown("**MarkdownView**")
+                val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.jacksimba)
+                //markdownView.setTypeface(typeface)
                 val i = Intent(this, AddEditNoteActivity::class.java)
                 i.putExtra("editNoteId", noteId)
-                //i.putExtra("editFolderId", folderId)
                 startActivity(i)
                 finish()
                 return true
+            }
+            R.id.export -> {
+                val arr = Array<String>(1){Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                ActivityCompat.requestPermissions(this,
+                    arr, PackageManager.PERMISSION_GRANTED)
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    // region draw context to pdf document
+                    var generatePDF = PdfDocument()
+                    var pageInfo = PdfDocument.PageInfo.Builder(1200, 2010, 1).create()
+                    var page = generatePDF.startPage(pageInfo)
+                    var canvas = page.canvas
+
+                    var titlePaint = Paint()
+                    titlePaint.textAlign = Paint.Align.CENTER
+                    titlePaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD))
+                    titlePaint.textSize = 70F
+                    canvas.drawText(
+                        "${db.getNoteById(noteId)?.title}",
+                        (pageWidth / 2).toFloat(), 270.0F, titlePaint
+                    )
+
+                    var bodyPaint = TextPaint()
+                    bodyPaint.textAlign = Paint.Align.LEFT
+                    bodyPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+                    bodyPaint.textSize = 70F
+//                canvas.drawText("${db.getNoteById(noteId)?.body}",
+//                    30.0F, 400.0F, bodyPaint)
+                    var bodyStaticLayout = StaticLayout(
+                        "${db.getNoteById(noteId)?.body}", bodyPaint, canvas.width,
+                        Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false
+                    )
+                    canvas.save()
+                    canvas.translate(30.0f, 400.0f)
+                    bodyStaticLayout.draw(canvas)
+                    canvas.restore()
+
+                    generatePDF.finishPage(page)
+                    // endregion
+
+                    // region write pdf file to the phone external storage
+                    val file = File(getExternalFilesDir(null), "/Note$noteId.pdf")
+                    generatePDF.writeTo(FileOutputStream(file))
+                    // endregion
+
+                    Toast.makeText(
+                        this,
+                        "File exports to ${getExternalFilesDir(null).toString()}/Note$noteId.pdf",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    generatePDF.close()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Permission denied",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -247,10 +365,12 @@ class ViewNoteActivity : AppCompatActivity() {
                 setSupportActionBar(actionBar)
                 supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                 supportActionBar!!.title = note.title
-                noteDisplay.text = note.body
+                noteDisplay.loadMarkdown(note.body)
+                //noteDisplay.text = note.body
                 Toast.makeText(this, "Note unlocked!", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun displayTagsList() {
@@ -258,5 +378,21 @@ class ViewNoteActivity : AppCompatActivity() {
         tagBoard.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         adapter = TagAdapterForView(this, tags)
         tagBoard.adapter = adapter
+    }
+
+    private fun cssStyleSheet(colorHeading: String?, colorBody: String?, font: String?): InternalStyleSheet {
+        val css: InternalStyleSheet = Github()
+        //css.addFontFace("MyFont", "condensed", "italic", "bold", "url('myfont.ttf')")
+        //css.addMedia("screen and (min-width: 1281px)")
+        //css.addRule("h1", "color: blue")
+        //css.endMedia()
+        css.addRule("h1", "color: $colorHeading", "font-family: $font")
+        css.addRule("h2", "color: $colorHeading", "font-family: $font")
+        css.addRule("h3", "color: $colorHeading", "font-family: $font")
+        css.addRule("h4", "color: $colorHeading", "font-family: $font")
+        css.addRule("h5", "color: $colorHeading", "font-family: $font")
+        css.addRule("h6", "color: $colorHeading", "font-family: $font")
+        css.addRule("*", "color: $colorBody", "font-family: $font")
+        return css
     }
 }
