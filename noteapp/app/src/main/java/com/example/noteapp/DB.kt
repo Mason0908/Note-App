@@ -185,7 +185,7 @@ class DB(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 }
             }
             if (!isInCloud){
-                removeNote(folder.id.toInt())
+                removeFolder(folder.id.toInt())
             }
         }
     }

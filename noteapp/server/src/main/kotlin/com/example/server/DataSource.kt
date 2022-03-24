@@ -97,7 +97,7 @@ class DataSource {
         note.setProperty("color", color)
         note.setProperty("tags", tags)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("EST")
+        dateFormat.timeZone = TimeZone.getTimeZone("America/Toronto")
         val date = Date()
         note.setProperty("modify_date", dateFormat.format(date))
         note.setProperty("delete_date", when(note.getProperty("delete_date")){

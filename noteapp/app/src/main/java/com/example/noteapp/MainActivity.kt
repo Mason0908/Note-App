@@ -150,6 +150,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                     db.sycn()
                     runOnUiThread {
                         notes = db.getNotesWithNoFolder()
+                        folders = db.getAllFolders()
                         displayList()
                     }
                 }
