@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">noteapp</string>
+    <string name="app_name">WeNote</string>
 
     <string-array name="colorHeading">
         <item>Black</item>
