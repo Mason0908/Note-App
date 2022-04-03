@@ -1,6 +1,8 @@
 package com.example.noteapp
 
 import android.app.Application
+import com.example.common.Note
+import com.example.common.Folder
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -17,10 +19,10 @@ import android.database.sqlite.SQLiteOpenHelper
 class Model: Application() {
     private val notes: MutableList<Note> = mutableListOf()
     private val filteredNotes: MutableList<Note> = mutableListOf()
-    private var _idCounter: Int = 0
+    private var _idCounter: Long = 0
 
 
-    private fun generateID(): Int {
+    private fun generateID(): Long {
         return _idCounter++
     }
 
@@ -28,7 +30,7 @@ class Model: Application() {
         return notes
     }
 
-    fun getNoteById(id: Int): Note? {
+    fun getNoteById(id: Long): Note? {
         return notes.find { it.id == id }
     }
 
@@ -37,17 +39,17 @@ class Model: Application() {
         notes.add(noteToAdd)
     }
 
-    fun removeNote(id: Int) {
+    fun removeNote(id: Long) {
         notes.removeIf { it.id == id }
     }
 
-    fun editNote(id: Int, newTitle: String, newBody: String) {
+    fun editNote(id: Long, newTitle: String, newBody: String) {
         var note = getNoteById(id)!!
         note.title = newTitle
         note.body = newBody
     }
 
-    fun hasNote(id: Int): Boolean {
+    fun hasNote(id: Long): Boolean {
         notes.forEach {
             if (it.id == id) {
                 return true
@@ -56,13 +58,13 @@ class Model: Application() {
         return false
     }
 
-    fun lockNote(id: Int, password: String) {
+    fun lockNote(id: Long, password: String) {
         val note = getNoteById(id)!!
         note.password = password
         note.isLocked = true
     }
 
-    fun unlockNote(id: Int) {
+    fun unlockNote(id: Long) {
         val note = getNoteById(id)!!
         note.password = null
         note.isLocked = false

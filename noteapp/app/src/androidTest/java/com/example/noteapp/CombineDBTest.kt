@@ -52,7 +52,7 @@ class CombineDBTest {
         db.addNote("title2", "body2", 1, null, null)
         assertEquals(2, db.getAllNotes().size)
         assertEquals(2, db.getNotesWithNoFolder().size)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         db.removeNote(numOfNote++)
         db.removeNote(numOfNote)
         assertEquals(0, db.getAllNotes().size)
@@ -68,10 +68,10 @@ class CombineDBTest {
         db.addFolder("f1", 1)
         assertEquals(1, db.getAllFolders().size)
         assertEquals(0, db.getAllNotes().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.addNote("title", "body", 1, null, numOfFolder)
         db.addNote("title2", "body2", 2, null, numOfFolder)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         assertEquals(2, db.getAllNotes().size)
         assertEquals(2, db.getAllFolderNotes(numOfFolder)?.size)
         db.removeNote(numOfNote++)
@@ -87,14 +87,34 @@ class CombineDBTest {
         db.addFolder("f1", 1)
         assertEquals(1, db.getAllFolders().size)
         assertEquals(0, db.getAllNotes().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.addNote("title", "body", 1, null, numOfFolder)
         db.addNote("title2", "body2", 2, null, numOfFolder)
-        numOfNote = db.getAllNotes()[0].id
+        numOfNote = db.getAllNotes()[0].id.toInt()
         assertEquals(0, db.getSearchNotesInFolders("TT", numOfFolder).size)
         assertEquals(2, db.getSearchNotesInFolders("TITLE", numOfFolder).size)
         assertEquals(1, db.getSearchNotesInFolders("BOdy2", numOfFolder).size)
         db.removeNote(numOfNote++)
+        db.removeNote(numOfNote)
+        assertEquals(0, db.getAllNotes().size)
+        db.removeFolder(numOfFolder)
+        assertEquals(0, db.getAllFolders().size)
+    }
+    // endregion
+
+    // region Sprint 3
+    @Test
+    fun move_note_to_folder() {
+        assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        assertEquals(1, db.getAllFolders().size)
+        assertEquals(0, db.getAllNotes().size)
+        numOfFolder = db.getAllFolders()[0].id.toInt()
+        db.addNote("title", "body", 1, null, numOfFolder)
+        numOfNote = db.getAllNotes()[0].id.toInt()
+        db.removeNoteTemporarily(numOfNote)
+        db.moveNoteToFolder(numOfNote, numOfFolder)
+        assertEquals(numOfFolder, db.getNoteById(numOfNote)?.folderId)
         db.removeNote(numOfNote)
         assertEquals(0, db.getAllNotes().size)
         db.removeFolder(numOfFolder)

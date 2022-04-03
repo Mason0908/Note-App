@@ -14,6 +14,13 @@ import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+//import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+//import kotlinx.serialization.json.Json
+import okhttp3.MediaType
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * @Description Add/Edit folder screen
@@ -23,6 +30,11 @@ class AddEditFolderActivity : AppCompatActivity() {
     private lateinit var titleField: EditText
     private var folderId: Int = -1
     private val db = DB(this, null)
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,21 +60,55 @@ class AddEditFolderActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                val i = Intent(this, MainActivity::class.java)
-                startActivity(i)
-                finish()
-                return true
+                if(folderId == -1) {
+                    val i = Intent(this, MainActivity::class.java)
+                    startActivity(i)
+                    finish()
+                    return true
+                } else {
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("displayFolderId", folderId)
+                    startActivity(i)
+                    finish()
+                    return true
+                }
             }
 
             R.id.saveChanges -> {
+                if (titleField.text.toString().isNullOrEmpty()) {
+                    titleField.error = "Folder title cannot be empty"
+                    return true
+                }
                 if (!db.hasFolder(folderId)) {
-                    db.addFolder(titleField.text.toString(), generateColour())
-                    startActivity(Intent(this, MainActivity::class.java))
+                    val color = generateColour()
+                    db.addFolder(titleField.text.toString(), color)
+                    val id = db.getLatestFolder()?.id
+                    GlobalScope.launch {
+                        eventService.addFolder(id ?: 0, titleField.text.toString(), color)
+                    }
+                    val i = Intent(this, ViewFolderActivity::class.java)
+                    i.putExtra("displayFolderId", when(folderId){
+                        -1 -> db.getLatestFolder()?.id?.toInt()
+                        else -> folderId
+                    })
+                    startActivity(i)
+                    finish()
+                    return true
                 } else {
                     db.editFolder(folderId, titleField.text.toString())
+                    val color = db.getFolderById(folderId)?.color
+                    GlobalScope.launch {
+                        eventService.addFolder(folderId.toLong(), titleField.text.toString(), color ?: generateColour())
+                    }
+
                     val i = Intent(this, ViewFolderActivity::class.java)
-                    i.putExtra("goBackFolder", folderId)
+                    i.putExtra("displayFolderId", when(folderId){
+                        -1 -> db.getLatestFolder()?.id?.toInt()
+                        else -> folderId
+                    })
                     startActivity(i)
+                    finish()
+                    return true
                 }
                 finish()
                 return true
@@ -79,19 +125,19 @@ class AddEditFolderActivity : AppCompatActivity() {
 
     private fun generateColour(): Int {
         val num = (1..4).random()
-        var color: Int = 0
+        var color = 0
         when(num) {
             1 -> {
-                color = R.color.lightyellow
+                color = -396315
             }
             2 -> {
-                color = R.color.lightblue
+                color = -3858
             }
             3 -> {
-                color = R.color.lightgreyyellow
+                color = -264765
             }
             4 -> {
-                color = R.color.lightpink
+                color = -3083024
             }
         }
         return color

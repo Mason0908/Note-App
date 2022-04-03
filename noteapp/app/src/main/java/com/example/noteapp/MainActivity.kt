@@ -13,6 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import java.text.SimpleDateFormat
+import com.example.common.Note
+import com.example.common.Folder
+import com.example.common.toJsonString
+//import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+//import kotlinx.serialization.json.Json
+import okhttp3.MediaType
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * @Description Home screen
@@ -22,20 +32,26 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var btnAdd: FloatingActionButton
     private lateinit var btnAddNote: FloatingActionButton
     private lateinit var btnAddFolder: FloatingActionButton
-    private lateinit var notes: MutableList<Note>
+    private var notes: MutableList<Note> = mutableListOf()
     private lateinit var folders: MutableList<Folder>
     private lateinit var adapter: Adapter
     private var sortBy = ""
     private var sortMethod = ""
     private val db = DB(this, null)
     private var isFABOpen = false
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .create(EventService::class.java)
+    private val mainActivity = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         notes = db.getNotesWithNoFolder()
+
         folders = db.getAllFolders()
-        println("folder: " + folders)
 
         // Get reference for note list
         noteBoard = findViewById(R.id.noteBoard)
@@ -92,7 +108,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.search_menu, menu)
+        inflater.inflate(R.menu.main_board_menu, menu)
         val search = menu?.findItem(R.id.searchIcon)
         val searchView = search?.actionView as SearchView
         searchView.isSubmitButtonEnabled = false
@@ -123,6 +139,21 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         when (item.itemId){
             R.id.searchIcon -> {
 
+            }
+            R.id.recycleBinIcon -> {
+                startActivity(Intent(this, RecentlyDeletedActivity::class.java))
+                finish()
+                return true
+            }
+            R.id.syncIcon -> {
+                GlobalScope.launch {
+                    db.sycn()
+                    runOnUiThread {
+                        notes = db.getNotesWithNoFolder()
+                        folders = db.getAllFolders()
+                        displayList()
+                    }
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -167,9 +198,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
      */
     private fun displayList() {
         noteBoard.layoutManager = LinearLayoutManager(this)
-        val adapter = Adapter(this, notes, folders)
+        val adapter = Adapter(mainActivity, notes, folders)
         noteBoard.adapter = adapter
     }
-
 
 }

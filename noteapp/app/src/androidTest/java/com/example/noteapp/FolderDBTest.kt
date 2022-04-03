@@ -43,7 +43,7 @@ class FolderDBTest {
         Assert.assertEquals(0, db.getAllFolders().size)
         db.addFolder("f1", 1)
         Assert.assertEquals(1, db.getAllFolders().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.removeFolder(numOfFolder)
         Assert.assertEquals(0, db.getAllFolders().size)
     }
@@ -53,7 +53,7 @@ class FolderDBTest {
         Assert.assertEquals(0, db.getAllFolders().size)
         db.addFolder("f1", 1)
         Assert.assertEquals(1, db.getAllFolders().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         Assert.assertEquals(true, db.hasFolder(numOfFolder))
         db.removeFolder(numOfFolder)
         Assert.assertEquals(0, db.getAllFolders().size)
@@ -64,7 +64,7 @@ class FolderDBTest {
         Assert.assertEquals(0, db.getAllFolders().size)
         db.addFolder("f1", 1)
         Assert.assertEquals(1, db.getAllFolders().size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.editFolder(numOfFolder, "folder1")
         Assert.assertEquals("folder1", db.getFolderById(numOfFolder)?.title)
         db.removeFolder(numOfFolder)
@@ -80,11 +80,27 @@ class FolderDBTest {
         Assert.assertEquals(2, db.getAllFolders().size)
         Assert.assertEquals(2, db.getSearchFolders("F1").size)
         Assert.assertEquals(1, db.getSearchFolders("F2f1").size)
-        numOfFolder = db.getAllFolders()[0].id
+        numOfFolder = db.getAllFolders()[0].id.toInt()
         db.removeFolder(numOfFolder++)
         db.removeFolder(numOfFolder)
         Assert.assertEquals(0, db.getAllFolders().size)
     }
 
+    // endregion
+
+    // region Sprint3
+    @Test
+    fun get_latest_folder() {
+        Assert.assertEquals(0, db.getAllFolders().size)
+        db.addFolder("f1", 1)
+        Assert.assertEquals(1, db.getAllFolders().size)
+        numOfFolder = db.getAllFolders()[0].id.toInt()
+        val folder = db.getFolderById(numOfFolder)
+        if (folder != null) {
+            db.getLatestFolder()?.let { Assert.assertEquals(folder.id, it.id) }
+        }
+        db.removeFolder(numOfFolder)
+        Assert.assertEquals(0, db.getAllFolders().size)
+    }
     // endregion
 }

@@ -9,10 +9,10 @@ package com.example.noteapp
  * TODO: perhaps add modified date to folder data object as well
  */
 
-data class Folder (
-    val id: Int,
-    var notesId: List<Int>,
-    var title: String,
-    var color: Int,
-    var modify_date: String?
-)
+//data class Folder (
+//    val id: Int,
+//    var notesId: List<Int>,
+//    var title: String,
+//    var color: Int,
+//    var modify_date: String?
+//)

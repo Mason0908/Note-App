@@ -2,16 +2,25 @@ package com.example.noteapp
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.os.Bundle
-import android.view.MenuItem
-import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
+import android.view.MenuItem
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+//import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+//import kotlinx.serialization.json.Json
+import okhttp3.MediaType
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+
 
 /**
  * @Description Add/Edit note screen
@@ -27,6 +36,12 @@ class AddEditNoteActivity : AppCompatActivity() {
     var tags: String = ""
     private lateinit var tagBoard: RecyclerView
     private lateinit var adapter: TagAdapterForEdit
+
+    private val eventService = Retrofit.Builder()
+        .baseUrl("https://noteapp-344119.uc.r.appspot.com/")
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .eventService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,18 +86,27 @@ class AddEditNoteActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             android.R.id.home -> {
-                if (backMain) {
-                    val i = Intent(this, MainActivity::class.java)
-                    startActivity(i)
-                    finish()
-                    return true
+                if (noteId == -1) {
+                    if(backMain) {
+                        val i = Intent(this, MainActivity::class.java)
+                        startActivity(i)
+                        finish()
+                        return true
+                    } else {
+                        val i = Intent(this, ViewFolderActivity::class.java)
+                        i.putExtra("displayFolderId", folderId)
+                        startActivity(i)
+                        finish()
+                        return true
+                    }
                 } else {
-                    val i = Intent(this, ViewFolderActivity::class.java)
-                    i.putExtra("goBackFolder", folderId)
+                    val i = Intent(this, ViewNoteActivity::class.java)
+                    i.putExtra("displayNoteId", noteId)
                     startActivity(i)
                     finish()
                     return true
                 }
+
             }
             R.id.addTag -> {
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -135,17 +159,29 @@ class AddEditNoteActivity : AppCompatActivity() {
             }
             R.id.saveChanges -> {
                 if (!db.hasNote(noteId)) {
-                    db.addNote(titleField.text.toString(), bodyField.text.toString(), generateColour(), tags, folderId)
+                    val color = generateColour()
+                    db.addNote(titleField.text.toString(), bodyField.text.toString(), color, tags, folderId)
+                    val id = db.getLatestNote()?.id
+                    GlobalScope.launch {
+                        eventService.addNote(id ?: 0, titleField.text.toString(), bodyField.text.toString(), color, tags, folderId)
+                    }
                 } else {
+                    val color = db.getNoteById(noteId)?.color
+                    val currFolderId = when(db.getNoteById(noteId)?.folderId){
+                        0 -> null
+                        else -> db.getNoteById(noteId)?.folderId
+                    }
                     db.editNote(noteId, titleField.text.toString(), bodyField.text.toString(), tags)
+                    GlobalScope.launch {
+                        eventService.addNote(noteId.toLong(), titleField.text.toString(), bodyField.text.toString(), color ?: generateColour(), tags, currFolderId)
+                    }
                 }
-                if (backMain) {
-                    startActivity(Intent(this, MainActivity::class.java))
-                } else {
-                    val i = Intent(this, ViewFolderActivity::class.java)
-                    i.putExtra("goBackFolder", folderId)
-                    startActivity(i)
-                }
+                val i = Intent(this, ViewNoteActivity::class.java)
+                i.putExtra("displayNoteId", when(noteId){
+                    -1 -> db.getLatestNote()?.id?.toInt()
+                    else -> noteId
+                })
+                startActivity(i)
                 finish()
                 return true
             }
@@ -164,16 +200,16 @@ class AddEditNoteActivity : AppCompatActivity() {
         var color = 0
         when(num) {
             1 -> {
-                color = R.color.lightyellow
+                color = -396315
             }
             2 -> {
-                color = R.color.lightblue
+                color = -3858
             }
             3 -> {
-                color = R.color.lightgreyyellow
+                color = -264765
             }
             4 -> {
-                color = R.color.lightpink
+                color = -3083024
             }
         }
         return color

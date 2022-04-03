@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">noteapp</string>
+
+    <string-array name="colorHeading">
+        <item>Black</item>
+        <item>Red</item>
+        <item>Blue</item>
+    </string-array>
 </resources>
