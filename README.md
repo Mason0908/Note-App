@@ -1,0 +1,1 @@
+All the information required (description, instructions, user guide, requirements, design, implementation, testing, ackowledgments, license, release notes, etc.) are stored in the wiki page [here](https://git.uwaterloo.ca/y424lu/cs398_project/-/wikis/home)!
