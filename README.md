@@ -2,6 +2,8 @@
 
 Welcome to our amazing Android note-taking application, with an amazing set of features designed specifically for university students!
 
+Just like in Jeff's template, this README is mostly merely a pointer to [the wiki](https://git.uwaterloo.ca/y424lu/cs398_project/-/wikis/home), which actually contains all the information needed for the final report!
+
 <h3>Wiki</h3>
 
 The wiki contains a landing page for the project plus detailed pages for different course deliverables.
