@@ -12,4 +12,4 @@ All the information required (description, instructions, user guide, requirement
 
 <h3>Issues and Sprints</h3>
 
-We use [Issues](https://git.uwaterloo.ca/y424lu/cs398_project/-/issues) to track the work to be done (where an issue represents an assignable task, which may be a new feature, change to an existing feature, or a bug fix). We have grouped issues into Sprints.
+We use [Issues](https://git.uwaterloo.ca/y424lu/cs398_project/-/issues) to track the work to be done (where an issue represents an assignable task, which may be a new feature, change to an existing feature, or a bug fix). We have grouped issues into Sprints. Each sprint's accomplishments are noted in the wiki.
