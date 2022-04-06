@@ -10,6 +10,6 @@ The wiki contains a landing page for the project plus detailed pages for differe
 
 All the information required (description, instructions, user guide, requirements, design, implementation, testing, ackowledgments, license, release notes, etc.) are stored [over there](https://git.uwaterloo.ca/y424lu/cs398_project/-/wikis/home)!
 
-<h3>Issues and Milestones</h3>
+<h3>Issues and Sprints</h3>
 
 We use [Issues](https://git.uwaterloo.ca/y424lu/cs398_project/-/issues) to track the work to be done (where an issue represents an assignable task, which may be a new feature, change to an existing feature, or a bug fix). We have grouped issues into Sprints.
